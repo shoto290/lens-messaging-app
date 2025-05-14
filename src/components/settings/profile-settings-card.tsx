@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { forwardRef, useImperativeHandle } from "react";
+import { forwardRef, useImperativeHandle, useRef } from "react";
 
 import {
   Form,
@@ -22,6 +22,7 @@ import { useLensAuthentication } from "@/hooks/use-lens-authentication";
 import { LensAuthOverlay } from "./lens-auth-overlay";
 import { Loader2 } from "lucide-react";
 import { useLensProfileUpdateMetadata } from "@/hooks/use-lens-profile-update-metadata";
+import { useLensAvatarUpload } from "@/hooks/use-lens-avatar-upload";
 
 const profileFormSchema = z.object({
   name: z.string().min(2, {
@@ -36,8 +37,6 @@ interface ProfileSettingsCardProps {
   avatarSrc?: string;
   name: string;
   bio: string;
-  onEditPhoto: () => void;
-  onRemovePhoto: () => void;
 }
 
 // Define the ref type to expose methods to parent components
@@ -48,12 +47,16 @@ export interface ProfileSettingsCardHandle {
 export const ProfileSettingsCard = forwardRef<
   ProfileSettingsCardHandle,
   ProfileSettingsCardProps
->(({ avatarSrc, name, bio, onEditPhoto, onRemovePhoto }, ref) => {
+>(({ avatarSrc, name, bio }, ref) => {
   const { isAuthenticated } = useLensAuthentication();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Use the real hook implementation
+  // Use profile update hook
   const { updateMetadata, isUpdatingName, isUpdatingBio, isPending } =
     useLensProfileUpdateMetadata();
+
+  // Use avatar upload hook
+  const { uploadAvatar, removeAvatar, isUploading } = useLensAvatarUpload();
 
   const defaultValues: Partial<ProfileFormValues> = {
     name: name,
@@ -78,6 +81,26 @@ export const ProfileSettingsCard = forwardRef<
         name: nameValue,
         bio: descriptionValue,
       });
+    }
+  };
+
+  // Handle file selection for avatar upload
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && isAuthenticated) {
+      uploadAvatar(file);
+    }
+  };
+
+  // Handle edit photo button click
+  const handleEditPhoto = () => {
+    fileInputRef.current?.click();
+  };
+
+  // Handle remove photo button click
+  const handleRemovePhoto = () => {
+    if (isAuthenticated) {
+      removeAvatar();
     }
   };
 
@@ -110,23 +133,43 @@ export const ProfileSettingsCard = forwardRef<
       <CardContent>
         <div className="flex justify-between items-center">
           <Avatar className="h-16 w-16">
-            <AvatarImage src={avatarSrc} />
-            <AvatarFallback>{name.substring(0, 2)}</AvatarFallback>
+            {isUploading ? (
+              <div className="h-full w-full flex items-center justify-center bg-muted">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : (
+              <>
+                <AvatarImage src={avatarSrc} />
+                <AvatarFallback>{name.substring(0, 2)}</AvatarFallback>
+              </>
+            )}
           </Avatar>
           <div className="mt-2 flex gap-2">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept="image/*"
+              className="hidden"
+            />
             <Button
               type="button"
               variant="outline"
               size="rounded"
-              onClick={onEditPhoto}
+              onClick={handleEditPhoto}
+              disabled={!isAuthenticated || isUploading || isPending}
             >
+              {isUploading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : null}
               Edit photo
             </Button>
             <Button
               type="button"
               variant="outline"
               size="rounded"
-              onClick={onRemovePhoto}
+              onClick={handleRemovePhoto}
+              disabled={!isAuthenticated || isUploading || isPending}
             >
               Remove
             </Button>

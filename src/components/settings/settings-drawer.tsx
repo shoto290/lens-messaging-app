@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { useAccount } from "@/hooks/use-account";
 import { useDisconnect } from "@/hooks/use-disconnect";
 
@@ -14,7 +14,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Icons } from "../icons";
 import { NotificationSettingsCard } from "./notification-settings-card";
-import { ProfileSettingsCard } from "./profile-settings-card";
+import {
+  ProfileSettingsCard,
+  ProfileSettingsCardHandle,
+} from "./profile-settings-card";
 
 interface SettingsDrawerProps {
   open: boolean;
@@ -24,11 +27,9 @@ interface SettingsDrawerProps {
 export function SettingsDrawer({ open, onOpenChange }: SettingsDrawerProps) {
   const { account } = useAccount();
   const { disconnect } = useDisconnect();
-  const [avatarSrc, setAvatarSrc] = useState<string | undefined>(
-    account?.account.metadata?.picture
-  );
+
   // Reference to the profile component to trigger save when drawer closes
-  const profileRef = useRef<{ saveProfile: () => void } | null>(null);
+  const profileRef = useRef<ProfileSettingsCardHandle | null>(null);
 
   // Handle drawer close - save profile data
   const handleOpenChange = useCallback(
@@ -44,14 +45,6 @@ export function SettingsDrawer({ open, onOpenChange }: SettingsDrawerProps) {
     [onOpenChange]
   );
 
-  function handleEditPhoto() {
-    console.log("Edit photo clicked");
-  }
-
-  function handleRemovePhoto() {
-    setAvatarSrc(undefined);
-  }
-
   function handleLogout() {
     disconnect();
     onOpenChange(false);
@@ -63,30 +56,32 @@ export function SettingsDrawer({ open, onOpenChange }: SettingsDrawerProps) {
         <DrawerTitle hidden className="text-center">
           Settings
         </DrawerTitle>
-        <div className="px-3 space-y-3">
-          <ProfileSettingsCard
-            ref={profileRef}
-            avatarSrc={avatarSrc}
-            name={account?.account.metadata?.name || ""}
-            bio={account?.account.metadata?.bio || ""}
-            onEditPhoto={handleEditPhoto}
-            onRemovePhoto={handleRemovePhoto}
-          />
-          <NotificationSettingsCard />
+        <div className="flex flex-col h-full">
+          <div className="flex-grow overflow-y-auto px-4">
+            <div className="space-y-4 pb-4 pt-1">
+              <ProfileSettingsCard
+                avatarSrc={account?.account.metadata?.picture}
+                name={account?.account.metadata?.name || ""}
+                bio={account?.account.metadata?.bio || ""}
+                ref={profileRef}
+              />
+              <NotificationSettingsCard />
+            </div>
+          </div>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button
+                variant="secondary"
+                size="rounded"
+                className="w-full"
+                onClick={handleLogout}
+              >
+                <Icons.Door className="size-4" />
+                Log out
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
         </div>
-        <DrawerFooter>
-          <DrawerClose asChild>
-            <Button
-              variant="secondary"
-              size="rounded"
-              className="w-full"
-              onClick={handleLogout}
-            >
-              <Icons.Door className="size-4" />
-              Log out
-            </Button>
-          </DrawerClose>
-        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );
