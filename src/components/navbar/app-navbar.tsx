@@ -6,51 +6,43 @@ import { Button } from "../ui/button";
 import { Navbar } from "./navbar";
 import { useDisconnect } from "@/hooks/use-disconnect";
 import { NAVBAR_ITEMS } from "@/lib/constants/navigation";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useNavigation } from "@/stores/navigation-store";
 import { cn } from "@/lib/utils";
 
 export function AppNavbar() {
   const { disconnect } = useDisconnect();
   const { account } = useAccount();
-  const pathname = usePathname();
-
-  const isActive = (path: string) => {
-    return pathname === path || pathname.startsWith(`${path}/`);
-  };
+  const { activeSection, setActiveSection } = useNavigation();
 
   return (
     <Navbar>
       {NAVBAR_ITEMS.map((item) => {
-        const active = isActive(item.href);
+        const active = activeSection === item.section;
 
         return (
-          <Link key={item.id} href={item.href}>
-            <Button
+          <Button
+            key={item.id}
+            className={cn(
+              "size-[32px]",
+              "relative",
+              "group",
+              "transition-colors",
+              active && "bg-accent"
+            )}
+            variant="ghost"
+            aria-label={item.label}
+            aria-current={active ? "page" : undefined}
+            onClick={() => setActiveSection(item.section)}
+          >
+            <item.icon
               className={cn(
-                "size-[32px]",
-                "relative",
-                "group",
-                "transition-colors",
-                active && "bg-accent"
+                "size-fit transition-all",
+                active
+                  ? "stroke-foreground"
+                  : "stroke-muted-foreground opacity-60 group-hover:opacity-80"
               )}
-              variant="ghost"
-              aria-label={item.label}
-              aria-current={active ? "page" : undefined}
-            >
-              <item.icon
-                className={cn(
-                  "size-fit transition-all",
-                  active
-                    ? "stroke-foreground"
-                    : "stroke-muted-foreground opacity-60 group-hover:opacity-80"
-                )}
-              />
-              {active && (
-                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
-              )}
-            </Button>
-          </Link>
+            />
+          </Button>
         );
       })}
       <Button

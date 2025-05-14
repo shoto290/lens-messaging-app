@@ -1,5 +1,10 @@
-import { redirect } from "next/navigation";
+import { AppPage } from "@/components/pages/app-page";
+import { ContentManager } from "@/components/pages/content-manager";
 
 export default function Page() {
-  redirect("/discover");
+  return (
+    <AppPage>
+      <ContentManager />
+    </AppPage>
+  );
 }

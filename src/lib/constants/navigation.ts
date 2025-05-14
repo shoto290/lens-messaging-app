@@ -1,23 +1,23 @@
 import { Icons } from "@/components/icons";
-import { NavItem } from "../types/navigation";
+import { NavItem, Section } from "../types/navigation";
 
 export const NAVBAR_ITEMS: NavItem[] = [
   {
     id: "discover",
     icon: Icons.Discover,
     label: "Discover",
-    href: "/discover",
+    section: Section.DISCOVER,
   },
   {
     id: "messages",
     icon: Icons.Message,
     label: "Messages",
-    href: "/messages",
+    section: Section.MESSAGES,
   },
   {
     id: "create",
     icon: Icons.Create,
     label: "Create",
-    href: "/create",
+    section: Section.CREATE,
   },
 ];
