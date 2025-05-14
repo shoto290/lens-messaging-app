@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback, useRef } from "react";
 import { useAccount } from "@/hooks/use-account";
 import { useDisconnect } from "@/hooks/use-disconnect";
 
@@ -10,48 +9,36 @@ import {
   DrawerContent,
   DrawerFooter,
   DrawerTitle,
+  DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Icons } from "../icons";
-import { NotificationSettingsCard } from "./notification-settings-card";
-import {
-  ProfileSettingsCard,
-  ProfileSettingsCardHandle,
-} from "./profile-settings-card";
+import { ProfileSettingsCard } from "./profile-settings-card";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-interface SettingsDrawerProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-export function SettingsDrawer({ open, onOpenChange }: SettingsDrawerProps) {
+export function SettingsDrawer() {
   const { account } = useAccount();
   const { disconnect } = useDisconnect();
 
-  // Reference to the profile component to trigger save when drawer closes
-  const profileRef = useRef<ProfileSettingsCardHandle | null>(null);
-
-  // Handle drawer close - save profile data
-  const handleOpenChange = useCallback(
-    (isOpen: boolean) => {
-      // If drawer is closing, save profile data
-      if (!isOpen && profileRef.current) {
-        profileRef.current.saveProfile();
-      }
-
-      // Propagate change to parent
-      onOpenChange(isOpen);
-    },
-    [onOpenChange]
-  );
-
   function handleLogout() {
     disconnect();
-    onOpenChange(false);
   }
 
   return (
-    <Drawer open={open} onOpenChange={handleOpenChange}>
+    <Drawer>
+      <DrawerTrigger asChild>
+        <Button className="size-[32px]" variant="ghost" aria-label="Profile">
+          <Avatar>
+            <AvatarImage
+              src={account?.account.metadata?.picture}
+              alt="Profile"
+            />
+            <AvatarFallback>
+              {account?.account.metadata?.name?.substring(0, 2)}
+            </AvatarFallback>
+          </Avatar>
+        </Button>
+      </DrawerTrigger>
       <DrawerContent>
         <DrawerTitle hidden className="text-center">
           Settings
@@ -63,7 +50,6 @@ export function SettingsDrawer({ open, onOpenChange }: SettingsDrawerProps) {
                 avatarSrc={account?.account.metadata?.picture}
                 name={account?.account.metadata?.name || ""}
                 bio={account?.account.metadata?.bio || ""}
-                ref={profileRef}
               />
               {/* <NotificationSettingsCard /> */}
             </div>
