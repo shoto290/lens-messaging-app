@@ -1,5 +1,6 @@
 import {
   ArrowRightIcon,
+  BellIcon,
   CirclePlusIcon,
   CompassIcon,
   Loader2Icon,
@@ -20,4 +21,13 @@ const Create = ({ ...props }: IconProps) => <CirclePlusIcon {...props} />;
 
 const ArrowRight = ({ ...props }: IconProps) => <ArrowRightIcon {...props} />;
 
-export const Icons = { Loader, Discover, Message, Create, ArrowRight };
+const Bell = ({ ...props }: IconProps) => <BellIcon {...props} />;
+
+export const Icons = {
+  Loader,
+  Discover,
+  Message,
+  Create,
+  ArrowRight,
+  Bell,
+};

@@ -1,9 +1,9 @@
 import { FunctionComponent } from "react";
 
 export enum Section {
-  DISCOVER = "discover",
-  MESSAGES = "messages",
-  CREATE = "create",
+  DISCOVER = "Discover",
+  MESSAGES = "Messages",
+  CREATE = "Create",
 }
 
 export interface NavItem {
