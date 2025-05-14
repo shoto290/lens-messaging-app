@@ -1,0 +1,44 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# State Management Guide
+
+State is managed using [Zustand](https://zustand-demo.pmnd.rs/) stores located in [src/stores/](mdc:src/stores/). Each store file (e.g., [user-store.ts](mdc:src/stores/user-store.ts)) encapsulates a single domain of state, exposing hooks for components to access and update state.
+
+- Stores should have clear, meaningful names reflecting their domain.
+- Store logic should be kept focused and avoid side effects outside of state updates.
+- Use the store's methods for all state mutations to ensure consistency.
+
+Refer to the store files for available state and actions.
+
+# State Management
+
+This project uses a combination of state management approaches:
+
+## Global State with Zustand
+
+- [UserStore](mdc:src/stores/user-store.ts): Authentication and user data
+- [RequestsStore](mdc:src/stores/requests-store.ts): Request data management
+- [PortfoliosStore](mdc:src/stores/portfolios-store.ts): Portfolio data management
+
+## Data Fetching with React Query
+
+Custom hooks in [src/hooks](mdc:src/hooks) use React Query for:
+- Data fetching
+- Caching
+- Synchronization
+- Error handling
+
+## Form State with React Hook Form
+
+Forms like [LoginForm](mdc:src/components/login-form.tsx) use:
+- React Hook Form for form state
+- Zod for validation schemas
+- Error handling and submission logic
+
+## Local Component State
+
+- React's useState and useReducer for component-level state
+- useEffect for side effects and lifecycle management

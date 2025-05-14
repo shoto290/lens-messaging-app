@@ -1,0 +1,32 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Routing Structure
+
+This project uses Next.js App Router with a structured route organization:
+
+## Route Groups
+
+- [src/app/(root)](mdc:src/app/(root)): Main application routes
+  - [@dashboard](mdc:src/app/(root)/@dashboard): Dashboard views
+    - [@fundAdmin](mdc:src/app/(root)/@dashboard/@fundAdmin): Fund administration
+    - [@main](mdc:src/app/(root)/@dashboard/@main): Main dashboard
+    - [@portfolioManager](mdc:src/app/(root)/@dashboard/@portfolioManager): Portfolio management
+  - [@login](mdc:src/app/(root)/@login): Authentication routes
+
+## Parallel Routes
+
+The project uses Next.js parallel routes (@ prefix) for complex layouts with multiple slots.
+
+## Layouts
+
+- [src/app/layout.tsx](mdc:src/app/layout.tsx): Root layout with providers
+- [src/app/(root)/layout.tsx](mdc:src/app/(root)/layout.tsx): Main application layout
+
+## Navigation
+
+Navigation is primarily handled through:
+- [AppSidebar](mdc:src/components/app-sidebar.tsx): Main navigation sidebar
+- Next.js Link component for client-side navigation

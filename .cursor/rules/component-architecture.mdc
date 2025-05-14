@@ -1,0 +1,34 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Component Architecture
+
+The components in this project follow a hierarchical organization:
+
+## Component Types
+
+- **UI Components**: [src/components/ui](mdc:src/components/ui)
+  - Primitive UI components built on Radix UI
+  - Examples: [Button](mdc:src/components/ui/button.tsx), [Card](mdc:src/components/ui/card.tsx)
+
+- **Feature Components**: [src/components](mdc:src/components)
+  - Higher-level components composed of UI primitives
+  - Examples: [LoginForm](mdc:src/components/login-form.tsx), [AppSidebar](mdc:src/components/app-sidebar.tsx)
+
+- **Page Components**: [src/app](mdc:src/app)
+  - Route-specific components in the App Router structure
+
+## Component Patterns
+
+- Components use React Hook Form with Zod validation for forms
+- UI components use class-variance-authority for variant management
+- Components follow a composition pattern with clear separation of concerns
+- Tailwind CSS is used for styling with utility classes
+
+## Key Components
+
+- [LoginForm](mdc:src/components/login-form.tsx): Authentication form
+- [AppSidebar](mdc:src/components/app-sidebar.tsx): Main navigation sidebar
+- [NavUser](mdc:src/components/nav-user.tsx): User navigation component

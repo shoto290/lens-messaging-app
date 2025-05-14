@@ -1,0 +1,16 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Components Directory Guide
+
+The [src/components/](mdc:src/components/) directory contains reusable UI and feature components. Subdirectories group related components (e.g., [ui/](mdc:src/components/ui/), [sidebar/](mdc:src/components/sidebar/)).
+
+- Components should be small, focused, and follow the single responsibility principle.
+- Use meaningful, descriptive names for components and props.
+- Prefer composition over inheritance for building complex UIs.
+- UI primitives (buttons, inputs, etc.) are in [ui/](mdc:src/components/ui/).
+- Feature components (e.g., [data-table.tsx](mdc:src/components/data-table.tsx)) should encapsulate their logic and expose clear interfaces.
+
+Refer to the components directory for available building blocks and patterns.

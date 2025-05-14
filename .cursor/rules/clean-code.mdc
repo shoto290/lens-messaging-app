@@ -1,0 +1,21 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Clean Code Guidelines
+
+All code contributions must follow the Clean Code Guidelines:
+
+- Use named constants instead of magic numbers; keep them at the top or in a constants file.
+- Choose meaningful names for variables, functions, and classes that reveal intent.
+- Write self-documenting code; use comments only to explain why, not what.
+- Ensure each function has a single responsibility and is small and focused.
+- Avoid code duplication by extracting reusable logic (DRY principle).
+- Organize code in a logical, hierarchical structure with consistent naming.
+- Encapsulate implementation details and expose clear interfaces.
+- Continuously refactor and address technical debt.
+- Write and maintain readable, comprehensive tests, including edge cases.
+- Use version control best practices: clear commit messages, small commits, and meaningful branch names.
+
+Refer to these guidelines for all code reviews and new development.
