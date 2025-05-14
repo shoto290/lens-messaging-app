@@ -5,6 +5,7 @@ import { mainnet } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { env } from "@/env";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 const config = createConfig(
   getDefaultConfig({
@@ -27,10 +28,17 @@ const queryClient = new QueryClient();
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <ConnectKitProvider>{children}</ConnectKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme="dark"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          <ConnectKitProvider>{children}</ConnectKitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </NextThemesProvider>
   );
 };
