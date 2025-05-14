@@ -15,32 +15,44 @@ export function AppNavbar() {
   const { account } = useAccount();
   const pathname = usePathname();
 
+  const isActive = (path: string) => {
+    return pathname === path || pathname.startsWith(`${path}/`);
+  };
+
   return (
     <Navbar>
-      {NAVBAR_ITEMS.map((item) => (
-        <Link key={item.id} href={item.href}>
-          <Button
-            className={cn(
-              "size-[32px]",
-              "relative",
-              "group",
-              "transition-colors",
-              pathname.includes(item.id) && "bg-accent"
-            )}
-            variant="ghost"
-            aria-label={item.label}
-          >
-            <item.icon
+      {NAVBAR_ITEMS.map((item) => {
+        const active = isActive(item.href);
+
+        return (
+          <Link key={item.id} href={item.href}>
+            <Button
               className={cn(
-                "size-fit",
-                pathname.includes(item.id)
-                  ? "stroke-foreground"
-                  : "stroke-muted-foreground"
+                "size-[32px]",
+                "relative",
+                "group",
+                "transition-colors",
+                active && "bg-accent"
               )}
-            />
-          </Button>
-        </Link>
-      ))}
+              variant="ghost"
+              aria-label={item.label}
+              aria-current={active ? "page" : undefined}
+            >
+              <item.icon
+                className={cn(
+                  "size-fit transition-all",
+                  active
+                    ? "stroke-foreground"
+                    : "stroke-muted-foreground opacity-60 group-hover:opacity-80"
+                )}
+              />
+              {active && (
+                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
+              )}
+            </Button>
+          </Link>
+        );
+      })}
       <Button
         onClick={() => disconnect()}
         className="size-[32px]"
