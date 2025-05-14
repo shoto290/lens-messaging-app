@@ -11,6 +11,7 @@ interface AccountState {
 interface AccountActions {
   initialize: (address?: string) => Promise<void>;
   getMe: (accessToken: string) => Promise<void>;
+  reset: () => void;
 }
 
 interface AccountStore extends AccountState, AccountActions {}

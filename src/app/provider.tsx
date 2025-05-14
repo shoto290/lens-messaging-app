@@ -24,7 +24,7 @@ const config = createConfig(
   })
 );
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
   return (

@@ -1,4 +1,4 @@
-import { Loader2Icon } from "lucide-react";
+import { ArrowRightIcon, Loader2Icon } from "lucide-react";
 
 interface IconProps {
   className?: string;
@@ -70,4 +70,6 @@ const Create = ({ ...props }: IconProps) => (
   </svg>
 );
 
-export const Icons = { Loader, Discover, Message, Create };
+const ArrowRight = ({ ...props }: IconProps) => <ArrowRightIcon {...props} />;
+
+export const Icons = { Loader, Discover, Message, Create, ArrowRight };
