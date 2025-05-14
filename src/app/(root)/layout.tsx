@@ -1,7 +1,7 @@
 "use client";
 
 import { useAccount } from "@/hooks/use-account";
-import { LoadingPage } from "@/pages/loading-page";
+import { LoadingPage } from "@/components/pages/loading-page";
 
 export default function RootLayout({
   login,
@@ -10,11 +10,11 @@ export default function RootLayout({
   login: React.ReactNode;
   app: React.ReactNode;
 }>) {
-  const { isLoggedIn, initialized } = useAccount();
+  const { initialized, hasAccount } = useAccount();
 
   if (!initialized) {
     return <LoadingPage />;
   }
 
-  return isLoggedIn ? app : login;
+  return hasAccount ? app : login;
 }
