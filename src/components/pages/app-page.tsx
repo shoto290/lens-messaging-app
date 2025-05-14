@@ -7,7 +7,7 @@ interface AppPageProps {
 
 export function AppPage({ children }: AppPageProps) {
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-dvh">
       <main className="flex-1 overflow-y-auto">{children}</main>
       <footer className="mt-auto">
         <AppNavbar />
