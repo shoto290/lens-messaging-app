@@ -58,14 +58,14 @@ export function SettingsDrawer({ open, onOpenChange }: SettingsDrawerProps) {
         </DrawerTitle>
         <div className="flex flex-col h-full">
           <div className="flex-grow overflow-y-auto px-4">
-            <div className="space-y-4 pb-4 pt-1">
+            <div className="space-y-4 pt-1">
               <ProfileSettingsCard
                 avatarSrc={account?.account.metadata?.picture}
                 name={account?.account.metadata?.name || ""}
                 bio={account?.account.metadata?.bio || ""}
                 ref={profileRef}
               />
-              <NotificationSettingsCard />
+              {/* <NotificationSettingsCard /> */}
             </div>
           </div>
           <DrawerFooter>

@@ -5,6 +5,8 @@ import { account } from "@lens-protocol/metadata";
 import { uri } from "@lens-protocol/client";
 import { setAccountMetadata } from "@lens-protocol/client/actions";
 import { groveService } from "@/services/grove-service";
+import { queryClient } from "@/app/provider";
+import { sleep } from "@/lib/utils";
 
 /**
  * Hook for uploading an avatar image to Grove and updating Lens Protocol account metadata
@@ -71,6 +73,10 @@ export const useLensAvatarUpload = () => {
       } finally {
         setIsUploading(false);
       }
+    },
+    onSuccess: async () => {
+      await sleep(4000);
+      queryClient.invalidateQueries({ queryKey: ["account"] });
     },
   });
 
