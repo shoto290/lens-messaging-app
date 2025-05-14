@@ -3,6 +3,7 @@ import {
   BellIcon,
   CirclePlusIcon,
   CompassIcon,
+  DoorOpenIcon,
   Loader2Icon,
   MessageSquareIcon,
 } from "lucide-react";
@@ -23,6 +24,8 @@ const ArrowRight = ({ ...props }: IconProps) => <ArrowRightIcon {...props} />;
 
 const Bell = ({ ...props }: IconProps) => <BellIcon {...props} />;
 
+const Door = ({ ...props }: IconProps) => <DoorOpenIcon {...props} />;
+
 export const Icons = {
   Loader,
   Discover,
@@ -30,4 +33,5 @@ export const Icons = {
   Create,
   ArrowRight,
   Bell,
+  Door,
 };
