@@ -1,5 +1,5 @@
-import { AppPage } from "@/components/pages/app-page";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <AppPage />;
+  redirect("/discover");
 }
