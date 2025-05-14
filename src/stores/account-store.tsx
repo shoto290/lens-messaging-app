@@ -1,16 +1,20 @@
 import { lensService } from "@/services/lens-service";
-import { AccountAvailable } from "@lens-protocol/client";
+import { AccountAvailable, SessionClient } from "@lens-protocol/client";
 import { create } from "zustand";
 
 interface AccountState {
   initialized: boolean;
   hasAccount: boolean;
   account: AccountAvailable | null;
+  sessionClient: SessionClient | null;
+  authenticated: boolean;
 }
 
 interface AccountActions {
   initialize: (address?: string) => Promise<void>;
-  getMe: (accessToken: string) => Promise<void>;
+  getMe: (address: string) => Promise<void>;
+  setSessionClient: (client: SessionClient | null) => void;
+  updateAuthStatus: (isAuthenticated: boolean) => void;
   reset: () => void;
 }
 
@@ -20,6 +24,8 @@ const DEFAULT_STATE: AccountState = {
   initialized: false,
   account: null,
   hasAccount: false,
+  sessionClient: null,
+  authenticated: false,
 };
 
 export const useAccountStore = create<AccountStore>((set, get) => ({
@@ -33,6 +39,15 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
     if (get().initialized) return;
     set({ initialized: true });
 
+    // Try to resume session
+    const sessionClient = await lensService.resumeSession();
+    if (sessionClient) {
+      set({
+        sessionClient,
+        authenticated: true,
+      });
+    }
+
     if (address) {
       return get().getMe(address);
     }
@@ -41,5 +56,16 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
   getMe: async (address: string) => {
     const account = await lensService.getUserByAddress(address);
     set({ account, hasAccount: !!account });
+  },
+
+  setSessionClient: (client: SessionClient | null) => {
+    set({
+      sessionClient: client,
+      authenticated: !!client,
+    });
+  },
+
+  updateAuthStatus: (isAuthenticated: boolean) => {
+    set({ authenticated: isAuthenticated });
   },
 }));

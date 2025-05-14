@@ -17,6 +17,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLensAuthentication } from "@/hooks/use-lens-authentication";
+import { LensAuthOverlay } from "./lens-auth-overlay";
 
 const profileFormSchema = z.object({
   name: z.string().min(2, {
@@ -42,6 +44,8 @@ export function ProfileSettingsCard({
   onEditPhoto,
   onRemovePhoto,
 }: ProfileSettingsCardProps) {
+  const { isAuthenticated } = useLensAuthentication();
+
   const defaultValues: Partial<ProfileFormValues> = {
     name: name,
     description: bio,
@@ -57,7 +61,7 @@ export function ProfileSettingsCard({
   }
 
   return (
-    <Card>
+    <Card className="relative">
       <CardHeader>
         <CardTitle className="text-lg font-medium">Profile</CardTitle>
       </CardHeader>
@@ -119,6 +123,8 @@ export function ProfileSettingsCard({
             />
           </form>
         </Form>
+
+        {!isAuthenticated && <LensAuthOverlay />}
       </CardContent>
     </Card>
   );
