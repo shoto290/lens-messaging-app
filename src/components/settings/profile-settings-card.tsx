@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { forwardRef, useImperativeHandle } from "react";
 
 import {
   Form,
@@ -19,6 +20,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLensAuthentication } from "@/hooks/use-lens-authentication";
 import { LensAuthOverlay } from "./lens-auth-overlay";
+import { Loader2 } from "lucide-react";
+import { useLensProfileUpdateMetadata } from "@/hooks/use-lens-profile-update-metadata";
 
 const profileFormSchema = z.object({
   name: z.string().min(2, {
@@ -37,14 +40,20 @@ interface ProfileSettingsCardProps {
   onRemovePhoto: () => void;
 }
 
-export function ProfileSettingsCard({
-  avatarSrc,
-  name,
-  bio,
-  onEditPhoto,
-  onRemovePhoto,
-}: ProfileSettingsCardProps) {
+// Define the ref type to expose methods to parent components
+export interface ProfileSettingsCardHandle {
+  saveProfile: () => void;
+}
+
+export const ProfileSettingsCard = forwardRef<
+  ProfileSettingsCardHandle,
+  ProfileSettingsCardProps
+>(({ avatarSrc, name, bio, onEditPhoto, onRemovePhoto }, ref) => {
   const { isAuthenticated } = useLensAuthentication();
+
+  // Use the real hook implementation
+  const { updateMetadata, isUpdatingName, isUpdatingBio, isPending } =
+    useLensProfileUpdateMetadata();
 
   const defaultValues: Partial<ProfileFormValues> = {
     name: name,
@@ -56,8 +65,41 @@ export function ProfileSettingsCard({
     defaultValues,
   });
 
+  // Handle field blur events to update metadata
+  const handleBlur = () => {
+    if (!isAuthenticated) return;
+
+    const nameValue = form.getValues("name");
+    const descriptionValue = form.getValues("description");
+
+    // Only update if values have changed
+    if (nameValue !== name || descriptionValue !== bio) {
+      updateMetadata({
+        name: nameValue,
+        bio: descriptionValue,
+      });
+    }
+  };
+
+  // Expose saveProfile method to parent components through ref
+  useImperativeHandle(ref, () => ({
+    saveProfile: () => {
+      const nameValue = form.getValues("name");
+      const descriptionValue = form.getValues("description");
+
+      // Only update if values have changed and user is authenticated
+      if (isAuthenticated && (nameValue !== name || descriptionValue !== bio)) {
+        updateMetadata({
+          name: nameValue,
+          bio: descriptionValue,
+        });
+      }
+    },
+  }));
+
   function onSubmit(data: ProfileFormValues) {
     console.log("Profile data:", data);
+    updateMetadata({ name: data.name, bio: data.description });
   }
 
   return (
@@ -101,9 +143,21 @@ export function ProfileSettingsCard({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Your name" {...field} />
-                  </FormControl>
+                  <div className="relative">
+                    <FormControl>
+                      <Input
+                        placeholder="Your name"
+                        {...field}
+                        onBlur={() => handleBlur()}
+                        disabled={isUpdatingName || isPending}
+                      />
+                    </FormControl>
+                    {isUpdatingName && (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -114,9 +168,21 @@ export function ProfileSettingsCard({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Tell us about yourself" {...field} />
-                  </FormControl>
+                  <div className="relative">
+                    <FormControl>
+                      <Textarea
+                        placeholder="Tell us about yourself"
+                        {...field}
+                        onBlur={() => handleBlur()}
+                        disabled={isUpdatingBio || isPending}
+                      />
+                    </FormControl>
+                    {isUpdatingBio && (
+                      <div className="absolute right-3 top-3">
+                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -128,4 +194,7 @@ export function ProfileSettingsCard({
       </CardContent>
     </Card>
   );
-}
+});
+
+// Add display name
+ProfileSettingsCard.displayName = "ProfileSettingsCard";

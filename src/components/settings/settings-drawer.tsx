@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useAccount } from "@/hooks/use-account";
 import { useDisconnect } from "@/hooks/use-disconnect";
 
@@ -27,6 +27,22 @@ export function SettingsDrawer({ open, onOpenChange }: SettingsDrawerProps) {
   const [avatarSrc, setAvatarSrc] = useState<string | undefined>(
     account?.account.metadata?.picture
   );
+  // Reference to the profile component to trigger save when drawer closes
+  const profileRef = useRef<{ saveProfile: () => void } | null>(null);
+
+  // Handle drawer close - save profile data
+  const handleOpenChange = useCallback(
+    (isOpen: boolean) => {
+      // If drawer is closing, save profile data
+      if (!isOpen && profileRef.current) {
+        profileRef.current.saveProfile();
+      }
+
+      // Propagate change to parent
+      onOpenChange(isOpen);
+    },
+    [onOpenChange]
+  );
 
   function handleEditPhoto() {
     console.log("Edit photo clicked");
@@ -42,13 +58,14 @@ export function SettingsDrawer({ open, onOpenChange }: SettingsDrawerProps) {
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
+    <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent>
         <DrawerTitle hidden className="text-center">
           Settings
         </DrawerTitle>
         <div className="px-3 space-y-3">
           <ProfileSettingsCard
+            ref={profileRef}
             avatarSrc={avatarSrc}
             name={account?.account.metadata?.name || ""}
             bio={account?.account.metadata?.bio || ""}
