@@ -6,6 +6,8 @@ import {
   DoorOpenIcon,
   Loader2Icon,
   MessageSquareIcon,
+  ChevronLeftIcon,
+  SendIcon,
 } from "lucide-react";
 
 interface IconProps {
@@ -26,6 +28,10 @@ const Bell = ({ ...props }: IconProps) => <BellIcon {...props} />;
 
 const Door = ({ ...props }: IconProps) => <DoorOpenIcon {...props} />;
 
+const ChevronLeft = ({ ...props }: IconProps) => <ChevronLeftIcon {...props} />;
+
+const Send = ({ ...props }: IconProps) => <SendIcon {...props} />;
+
 export const Icons = {
   Loader,
   Discover,
@@ -34,4 +40,6 @@ export const Icons = {
   ArrowRight,
   Bell,
   Door,
+  ChevronLeft,
+  Send,
 };

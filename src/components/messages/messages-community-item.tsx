@@ -1,5 +1,10 @@
+"use client";
+
 import { Community } from "@/services/community-service.types";
 import { Badge } from "../ui/badge";
+import { useChatStore } from "@/stores/chat-store";
+import { useNavigation } from "@/stores/navigation-store";
+import { Section } from "@/lib/types/navigation";
 
 interface MessagesCommunityItemProps {
   community: Community;
@@ -8,8 +13,19 @@ interface MessagesCommunityItemProps {
 export function MessagesCommunityItem({
   community,
 }: MessagesCommunityItemProps) {
+  const setActiveCommunity = useChatStore((state) => state.setActiveCommunity);
+  const { setActiveSection } = useNavigation();
+
+  const handleOpenChat = () => {
+    setActiveCommunity(community);
+    setActiveSection(Section.CHAT);
+  };
+
   return (
-    <div className="w-full border-b border-border flex flex-row justify-between items-center p-[16px] hover:bg-accent/50 transition-colors cursor-pointer">
+    <div
+      className="w-full border-b border-border flex flex-row justify-between items-center p-[16px] hover:bg-accent/50 transition-colors cursor-pointer"
+      onClick={handleOpenChat}
+    >
       <div className="flex items-center gap-3">
         <img
           className="rounded h-10 aspect-square"
