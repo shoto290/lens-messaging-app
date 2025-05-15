@@ -1,9 +1,3 @@
-export interface Community {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  members: string[];
-  createdAt: string;
-  updatedAt: string;
-}
+import { Group } from "@lens-protocol/client";
+
+export type Community = Group & {};

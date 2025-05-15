@@ -31,10 +31,10 @@ export const useCommunityStore = create<CommunityStore>((set, get) => ({
     if (get().initialized) return;
     set({ initialized: true });
 
-    const userCommunities = await communityService.getCommunitiesOfUser(
+    const userCommunities = await communityService.getUserCommunities(
       profileId
     );
-    const discoverCommunities = await communityService.getCommunities();
+    const discoverCommunities = await communityService.getTrendingCommunities();
 
     set({ userCommunities, discoverCommunities });
   },

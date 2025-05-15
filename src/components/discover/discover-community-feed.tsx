@@ -7,7 +7,7 @@ export function DiscoverCommunityFeed() {
   return (
     <div className="flex flex-col">
       {communities?.map((community) => (
-        <DiscoverCommunityItem key={community.id} community={community} />
+        <DiscoverCommunityItem key={community.address} community={community} />
       ))}
     </div>
   );

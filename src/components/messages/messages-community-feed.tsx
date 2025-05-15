@@ -7,7 +7,7 @@ export function MessagesCommunityFeed() {
   return (
     <div className="flex flex-col">
       {communities?.map((community) => (
-        <MessagesCommunityItem key={community.id} community={community} />
+        <MessagesCommunityItem key={community.address} community={community} />
       ))}
     </div>
   );

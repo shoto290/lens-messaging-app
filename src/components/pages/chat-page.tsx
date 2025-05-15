@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { Icons } from "../icons";
 import { useNavigation } from "@/stores/navigation-store";
 import { Section } from "@/lib/types/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export function ChatPage() {
   const [messageText, setMessageText] = useState("");
@@ -34,13 +35,14 @@ export function ChatPage() {
           >
             <Icons.ChevronLeft />
           </Button>
-          <img
-            className="rounded h-8 aspect-square"
-            src={activeCommunity.image}
-            alt={activeCommunity.name}
-          />
+          <Avatar>
+            <AvatarImage src={activeCommunity.metadata?.icon} />
+            <AvatarFallback>
+              {activeCommunity.metadata?.name?.slice(0, 2).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
           <h3 className="text-sm font-bold font-mono">
-            {activeCommunity.name}
+            {activeCommunity.metadata?.name}
           </h3>
         </div>
       </div>

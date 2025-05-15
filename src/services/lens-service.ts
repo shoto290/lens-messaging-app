@@ -21,7 +21,7 @@ import { account } from "@lens-protocol/metadata";
 import { groveService } from "./grove-service";
 import { env } from "@/env";
 
-const lensClient = PublicClient.create({
+export const lensClient = PublicClient.create({
   environment: mainnet,
   fragments: [AccountFragment],
   storage: typeof window !== "undefined" ? window.localStorage : undefined,
