@@ -39,7 +39,6 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
     if (get().initialized) return;
     set({ initialized: true });
 
-    // Try to resume session
     const sessionClient = await lensService.resumeSession();
     if (sessionClient) {
       set({
@@ -48,7 +47,7 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
       });
     }
 
-    if (address) {
+    if (sessionClient && address) {
       return get().getMe(address);
     }
   },

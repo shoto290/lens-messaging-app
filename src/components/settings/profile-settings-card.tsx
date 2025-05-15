@@ -19,7 +19,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLensAuthentication } from "@/hooks/lens/use-lens-authentication";
-import { LensAuthOverlay } from "./lens-auth-overlay";
 import { Loader2 } from "lucide-react";
 import { useLensProfileUpdateMetadata } from "@/hooks/lens/use-lens-profile-update-metadata";
 import { useLensAvatarUpload } from "@/hooks/lens/use-lens-avatar-upload";
@@ -204,8 +203,6 @@ export const ProfileSettingsCard = forwardRef<
             />
           </form>
         </Form>
-
-        {!isAuthenticated && <LensAuthOverlay />}
       </CardContent>
     </Card>
   );

@@ -114,6 +114,8 @@ const logout = async (): Promise<boolean> => {
     }
     return false;
   } catch (error) {
+    window.localStorage.removeItem("lens.mainnet.credentials");
+
     console.error("Logout failed:", error);
     return false;
   }
