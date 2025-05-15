@@ -19,9 +19,7 @@ import { signMessageWith } from "@lens-protocol/client/viem";
 import { type WalletClient as ViemWalletClient } from "viem";
 import { account } from "@lens-protocol/metadata";
 import { groveService } from "./grove-service";
-
-// Lens Protocol test app ID for mainnet
-const LENS_APP_ID = "0x8A5Cc31180c37078e1EbA2A23c861Acf351a97cE";
+import { env } from "@/env";
 
 const lensClient = PublicClient.create({
   environment: mainnet,
@@ -81,13 +79,13 @@ const login = async (
             accountOwner: {
               owner: evmAddress(address),
               account: evmAddress(accountResult.account.address),
-              app: evmAddress(LENS_APP_ID),
+              app: evmAddress(env.NEXT_PUBLIC_LENS_APP_ID),
             },
           }
         : {
             onboardingUser: {
               wallet: evmAddress(address),
-              app: evmAddress(LENS_APP_ID),
+              app: evmAddress(env.NEXT_PUBLIC_LENS_APP_ID),
             },
           }),
       signMessage: signMessageWith(walletClient),
