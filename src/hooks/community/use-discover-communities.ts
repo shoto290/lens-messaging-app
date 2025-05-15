@@ -1,13 +1,16 @@
-import { communityService } from "@/services/community-service";
+import { useCommunityStore } from "@/stores/community-store";
 import { useQuery } from "@tanstack/react-query";
 
 export function useDiscoverCommunities() {
+  const { fetchDiscoverCommunities, discoverCommunities } = useCommunityStore();
+
   const query = useQuery({
     queryKey: ["discover-communities"],
-    queryFn: () => communityService.getTrendingCommunities(),
+    queryFn: () => fetchDiscoverCommunities(),
   });
 
   return {
     ...query,
+    discoverCommunities,
   };
 }

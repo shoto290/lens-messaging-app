@@ -9,7 +9,8 @@ interface CommunityState {
 }
 
 interface CommunityActions {
-  initialize: (profileId: string) => Promise<void>;
+  fetchUserCommunities: (profileId: string) => Promise<void>;
+  fetchDiscoverCommunities: () => Promise<void>;
 }
 
 interface CommunityStore extends CommunityState, CommunityActions {}
@@ -20,22 +21,22 @@ const DEFAULT_STATE: CommunityState = {
   discoverCommunities: [],
 };
 
-export const useCommunityStore = create<CommunityStore>((set, get) => ({
+export const useCommunityStore = create<CommunityStore>((set) => ({
   ...DEFAULT_STATE,
 
   reset: () => {
     set(DEFAULT_STATE);
   },
 
-  initialize: async (profileId: string) => {
-    if (get().initialized) return;
-    set({ initialized: true });
-
+  fetchUserCommunities: async (profileId: string) => {
     const userCommunities = await communityService.getUserCommunities(
       profileId
     );
-    const discoverCommunities = await communityService.getTrendingCommunities();
+    set({ userCommunities });
+  },
 
-    set({ userCommunities, discoverCommunities });
+  fetchDiscoverCommunities: async () => {
+    const discoverCommunities = await communityService.getTrendingCommunities();
+    set({ discoverCommunities });
   },
 }));

@@ -7,7 +7,7 @@ import { Section } from "@/lib/types/navigation";
 
 export function MessagesCommunityFeed() {
   const { setActiveSection } = useNavigation();
-  const { data: communities, isPending } = useUserCommunities();
+  const { userCommunities, isPending } = useUserCommunities();
 
   if (isPending) {
     return (
@@ -18,7 +18,7 @@ export function MessagesCommunityFeed() {
     );
   }
 
-  if (!communities?.length) {
+  if (!userCommunities?.length) {
     return (
       <div className="flex flex-col items-center justify-center p-8 space-y-4">
         <Icons.Message className="h-12 w-12 text-muted-foreground" />
@@ -40,7 +40,7 @@ export function MessagesCommunityFeed() {
 
   return (
     <div className="flex flex-col">
-      {communities.map((community) => (
+      {userCommunities.map((community) => (
         <MessagesCommunityItem key={community.address} community={community} />
       ))}
     </div>

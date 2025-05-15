@@ -1,18 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "../use-account";
-import { communityService } from "@/services/community-service";
+import { useCommunityStore } from "@/stores/community-store";
 
 export function useUserCommunities() {
+  const { fetchUserCommunities, userCommunities } = useCommunityStore();
   const { account } = useAccount();
 
   const query = useQuery({
     queryKey: ["user-communities", account?.account.address],
-    queryFn: () =>
-      communityService.getUserCommunities(account?.account.address || ""),
+    queryFn: () => fetchUserCommunities(account?.account.address || ""),
     enabled: !!account?.account.address,
   });
 
   return {
     ...query,
+    userCommunities,
   };
 }
