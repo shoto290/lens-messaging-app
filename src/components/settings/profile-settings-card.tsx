@@ -18,11 +18,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useLensAuthentication } from "@/hooks/use-lens-authentication";
+import { useLensAuthentication } from "@/hooks/lens/use-lens-authentication";
 import { LensAuthOverlay } from "./lens-auth-overlay";
 import { Loader2 } from "lucide-react";
-import { useLensProfileUpdateMetadata } from "@/hooks/use-lens-profile-update-metadata";
-import { useLensAvatarUpload } from "@/hooks/use-lens-avatar-upload";
+import { useLensProfileUpdateMetadata } from "@/hooks/lens/use-lens-profile-update-metadata";
+import { useLensAvatarUpload } from "@/hooks/lens/use-lens-avatar-upload";
 
 const profileFormSchema = z.object({
   name: z.string().min(2, {
@@ -39,7 +39,6 @@ interface ProfileSettingsCardProps {
   bio: string;
 }
 
-// Define the ref type to expose methods to parent components
 export interface ProfileSettingsCardHandle {
   saveProfile: () => void;
 }
@@ -51,12 +50,9 @@ export const ProfileSettingsCard = forwardRef<
   const { isAuthenticated } = useLensAuthentication();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Use profile update hook
-  const { updateMetadata, isUpdatingName, isUpdatingBio, isPending } =
-    useLensProfileUpdateMetadata();
+  const { updateMetadata, isPending } = useLensProfileUpdateMetadata();
 
-  // Use avatar upload hook
-  const { uploadAvatar, removeAvatar, isUploading } = useLensAvatarUpload();
+  const { uploadAvatar, isUploading } = useLensAvatarUpload();
 
   const defaultValues: Partial<ProfileFormValues> = {
     name: name,
@@ -68,14 +64,12 @@ export const ProfileSettingsCard = forwardRef<
     defaultValues,
   });
 
-  // Handle field blur events to update metadata
   const handleBlur = () => {
     if (!isAuthenticated) return;
 
     const nameValue = form.getValues("name");
     const descriptionValue = form.getValues("description");
 
-    // Only update if values have changed
     if (nameValue !== name || descriptionValue !== bio) {
       updateMetadata({
         name: nameValue,
@@ -84,7 +78,6 @@ export const ProfileSettingsCard = forwardRef<
     }
   };
 
-  // Handle file selection for avatar upload
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && isAuthenticated) {
@@ -92,25 +85,15 @@ export const ProfileSettingsCard = forwardRef<
     }
   };
 
-  // Handle edit photo button click
   const handleEditPhoto = () => {
     fileInputRef.current?.click();
   };
 
-  // Handle remove photo button click
-  const handleRemovePhoto = () => {
-    if (isAuthenticated) {
-      removeAvatar();
-    }
-  };
-
-  // Expose saveProfile method to parent components through ref
   useImperativeHandle(ref, () => ({
     saveProfile: () => {
       const nameValue = form.getValues("name");
       const descriptionValue = form.getValues("description");
 
-      // Only update if values have changed and user is authenticated
       if (isAuthenticated && (nameValue !== name || descriptionValue !== bio)) {
         updateMetadata({
           name: nameValue,
@@ -133,16 +116,8 @@ export const ProfileSettingsCard = forwardRef<
       <CardContent>
         <div className="flex justify-between items-center">
           <Avatar className="h-16 w-16">
-            {isUploading ? (
-              <div className="h-full w-full flex items-center justify-center bg-muted">
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-              </div>
-            ) : (
-              <>
-                <AvatarImage src={avatarSrc} />
-                <AvatarFallback>{name.substring(0, 2)}</AvatarFallback>
-              </>
-            )}
+            <AvatarImage src={avatarSrc} />
+            <AvatarFallback>{name.substring(0, 2)}</AvatarFallback>
           </Avatar>
           <div className="mt-2 flex gap-2">
             <input
@@ -164,15 +139,6 @@ export const ProfileSettingsCard = forwardRef<
               ) : null}
               Edit photo
             </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="rounded"
-              onClick={handleRemovePhoto}
-              disabled={!isAuthenticated || isUploading || isPending}
-            >
-              Remove
-            </Button>
           </div>
         </div>
         <Form {...form}>
@@ -192,10 +158,10 @@ export const ProfileSettingsCard = forwardRef<
                         placeholder="Your name"
                         {...field}
                         onBlur={() => handleBlur()}
-                        disabled={isUpdatingName || isPending}
+                        disabled={isPending}
                       />
                     </FormControl>
-                    {isUpdatingName && (
+                    {isPending && (
                       <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                         <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                       </div>
@@ -217,10 +183,11 @@ export const ProfileSettingsCard = forwardRef<
                         placeholder="Tell us about yourself"
                         {...field}
                         onBlur={() => handleBlur()}
-                        disabled={isUpdatingBio || isPending}
+                        disabled={isPending}
+                        className="resize-none max-h-20"
                       />
                     </FormControl>
-                    {isUpdatingBio && (
+                    {isPending && (
                       <div className="absolute right-3 top-3">
                         <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                       </div>
@@ -239,5 +206,4 @@ export const ProfileSettingsCard = forwardRef<
   );
 });
 
-// Add display name
 ProfileSettingsCard.displayName = "ProfileSettingsCard";

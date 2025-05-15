@@ -1,28 +1,22 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { lensService } from "@/services/lens-service";
 import { useAccountStore } from "@/stores/account-store";
 import { useAccount, useWalletClient } from "wagmi";
+import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/app/provider";
 
 export const useLensAuthentication = () => {
-  const {
-    initialized,
-    initialize,
-    authenticated,
-    sessionClient,
-    setSessionClient,
-  } = useAccountStore();
+  const { initialized, initialize, sessionClient, setSessionClient } =
+    useAccountStore();
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
-  const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
 
-  // Initialize authentication state
   useEffect(() => {
     const checkSession = async () => {
       const session = await lensService.resumeSession();
       if (session) {
         setSessionClient(session);
 
-        // Get the account info if we have a session but no account
         if (!initialized && address) {
           await initialize(address);
         }
@@ -34,7 +28,6 @@ export const useLensAuthentication = () => {
     }
   }, [initialize, initialized, setSessionClient, address, isConnected]);
 
-  // Login function
   const login = useCallback(async () => {
     try {
       if (!address || !walletClient) {
@@ -42,7 +35,6 @@ export const useLensAuthentication = () => {
         return false;
       }
 
-      setIsAuthenticating(true);
       const client = await lensService.login(address, walletClient);
       setSessionClient(client);
       await initialize(address);
@@ -50,33 +42,21 @@ export const useLensAuthentication = () => {
     } catch (error) {
       console.error("Failed to login:", error);
       return false;
-    } finally {
-      setIsAuthenticating(false);
     }
   }, [initialize, setSessionClient, address, walletClient]);
 
-  // Logout function
-  const logout = useCallback(async () => {
-    try {
-      const success = await lensService.logout();
-      if (success) {
-        setSessionClient(null);
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error("Failed to logout:", error);
-      return false;
-    }
-  }, [setSessionClient]);
+  const mutation = useMutation<boolean, Error, void>({
+    mutationFn: login,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["account"] });
+    },
+  });
 
   return {
-    isAuthenticated: authenticated,
-    isAuthenticating,
+    ...mutation,
     sessionClient,
-    login,
-    logout,
-    address,
-    isConnected,
+    isAuthenticated: sessionClient !== null,
+    login: mutation.mutate,
+    loginAsync: mutation.mutateAsync,
   };
 };

@@ -4,65 +4,29 @@ import {
   SessionClient,
   mainnet,
   evmAddress,
-  IStorageProvider,
+  Account,
+  AccountMetadata,
+  uri,
 } from "@lens-protocol/client";
 import { AccountFragment } from "./lens-service.fragments";
 import {
   fetchAccountsAvailable,
   currentSession,
   lastLoggedInAccount,
+  setAccountMetadata,
 } from "@lens-protocol/client/actions";
 import { signMessageWith } from "@lens-protocol/client/viem";
 import { type WalletClient as ViemWalletClient } from "viem";
+import { account } from "@lens-protocol/metadata";
+import { groveService } from "./grove-service";
 
 // Lens Protocol test app ID for mainnet
 const LENS_APP_ID = "0x8A5Cc31180c37078e1EbA2A23c861Acf351a97cE";
 
-// Custom storage provider that appends owner and account addresses to keys
-class ProfileAwareStorage implements IStorageProvider {
-  private storage: Storage;
-  private currentOwner: string | null = null;
-  private currentAccount: string | null = null;
-
-  constructor(storage: Storage) {
-    this.storage = storage;
-  }
-
-  setAddresses(owner: string, account?: string) {
-    this.currentOwner = owner;
-    this.currentAccount = account || null;
-  }
-
-  private getKey(key: string): string {
-    if (this.currentOwner) {
-      return `${this.currentOwner}:${this.currentAccount || "none"}:${key}`;
-    }
-    return key;
-  }
-
-  getItem(key: string): string | null {
-    return this.storage.getItem(this.getKey(key));
-  }
-
-  setItem(key: string, value: string): void {
-    this.storage.setItem(this.getKey(key), value);
-  }
-
-  removeItem(key: string): void {
-    this.storage.removeItem(this.getKey(key));
-  }
-}
-
-// Create storage if window is available (client-side)
-const customStorage =
-  typeof window !== "undefined"
-    ? new ProfileAwareStorage(window.localStorage)
-    : undefined;
-
 const lensClient = PublicClient.create({
   environment: mainnet,
   fragments: [AccountFragment],
-  storage: customStorage,
+  storage: window.localStorage,
 });
 
 // Keep track of the session client
@@ -109,13 +73,7 @@ const login = async (
   walletClient: ViemWalletClient
 ): Promise<SessionClient | null> => {
   try {
-    // Login as onboarding user or account owner based on if they have an account
     const accountResult = await getUserByAddress(address);
-
-    // Set the addresses for storage prefixing
-    if (customStorage) {
-      customStorage.setAddresses(address, accountResult?.account?.address);
-    }
 
     const authenticated = await lensClient.login({
       ...(accountResult
@@ -148,7 +106,6 @@ const login = async (
   }
 };
 
-// The logout method is available on the client at runtime but missing from the types
 const logout = async (): Promise<boolean> => {
   try {
     // @ts-expect-error The lensClient has a logout method but it's not in the TypeScript type definitions
@@ -192,6 +149,36 @@ const getCurrentSession = async (): Promise<boolean> => {
   }
 };
 
+const updateAccountMetadata = async (
+  sessionClient: SessionClient,
+  currentAccount: Account,
+  newMetadata: Partial<AccountMetadata>
+) => {
+  const existingMetadata = currentAccount.metadata;
+
+  const metadata = account({
+    name: newMetadata.name || existingMetadata?.name || undefined,
+    bio: newMetadata.bio || existingMetadata?.bio || undefined,
+    picture: newMetadata.picture || existingMetadata?.picture || undefined,
+    coverPicture:
+      newMetadata.coverPicture || existingMetadata?.coverPicture || undefined,
+    attributes:
+      newMetadata.attributes || existingMetadata?.attributes || undefined,
+  });
+
+  const metadataUri = await groveService.uploadJson(metadata);
+
+  const result = await setAccountMetadata(sessionClient, {
+    metadataUri: uri(metadataUri),
+  });
+
+  if ("isErr" in result && result.isErr()) {
+    throw new Error(`Failed to update metadata: ${result.error.message}`);
+  }
+
+  return "value" in result ? result.value : result;
+};
+
 export const lensService = {
   getUserByAddress,
   login,
@@ -199,15 +186,11 @@ export const lensService = {
   resumeSession,
   getCurrentSession,
   getLastLoggedInAccount,
+  updateAccountMetadata,
   get client() {
     return lensClient;
   },
   get sessionClient() {
     return sessionClientInstance;
-  },
-  setStorageAddresses: (owner: string, account?: string) => {
-    if (customStorage) {
-      customStorage.setAddresses(owner, account);
-    }
   },
 };

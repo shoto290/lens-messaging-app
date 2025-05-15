@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { useLensAuthentication } from "@/hooks/use-lens-authentication";
+import { useLensAuthentication } from "@/hooks/lens/use-lens-authentication";
+import { useAccount } from "@/hooks/use-account";
 import { useState } from "react";
 import { useConnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 
 export function LensAuthOverlay() {
-  const { login, isAuthenticating, isConnected, address } =
-    useLensAuthentication();
+  const { isLoggedIn } = useAccount();
+  const { loginAsync, isPending } = useLensAuthentication();
   const { connect } = useConnect();
   const [error, setError] = useState<string | null>(null);
 
@@ -14,14 +15,12 @@ export function LensAuthOverlay() {
     try {
       setError(null);
 
-      // If not connected to wallet, connect first
-      if (!isConnected || !address) {
+      if (!isLoggedIn) {
         connect({ connector: injected() });
         return;
       }
 
-      // Now authenticate with Lens
-      const success = await login();
+      const success = await loginAsync();
 
       if (!success) {
         setError("Failed to authenticate with Lens");
@@ -42,12 +41,12 @@ export function LensAuthOverlay() {
         {error && <p className="text-destructive text-sm">{error}</p>}
         <Button
           onClick={handleAuthenticate}
-          disabled={isAuthenticating}
+          disabled={isPending}
           className="mt-2"
         >
-          {isAuthenticating
+          {isPending
             ? "Authenticating..."
-            : isConnected
+            : isLoggedIn
             ? "Connect to Lens"
             : "Connect Wallet"}
         </Button>
