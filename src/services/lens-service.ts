@@ -24,7 +24,7 @@ import { env } from "@/env";
 const lensClient = PublicClient.create({
   environment: mainnet,
   fragments: [AccountFragment],
-  storage: window.localStorage,
+  storage: typeof window !== "undefined" ? window.localStorage : undefined,
 });
 
 // Keep track of the session client
