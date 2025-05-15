@@ -23,6 +23,7 @@ import { LensAuthOverlay } from "./lens-auth-overlay";
 import { Loader2 } from "lucide-react";
 import { useLensProfileUpdateMetadata } from "@/hooks/lens/use-lens-profile-update-metadata";
 import { useLensAvatarUpload } from "@/hooks/lens/use-lens-avatar-upload";
+import { toast } from "sonner";
 
 const profileFormSchema = z.object({
   name: z.string().min(2, {
@@ -104,8 +105,12 @@ export const ProfileSettingsCard = forwardRef<
   }));
 
   function onSubmit(data: ProfileFormValues) {
-    console.log("Profile data:", data);
-    updateMetadata({ name: data.name, bio: data.description });
+    try {
+      updateMetadata({ name: data.name, bio: data.description });
+    } catch (error) {
+      console.error("Error submitting profile data:", error);
+      toast.error("Error submitting profile data");
+    }
   }
 
   return (

@@ -12,20 +12,25 @@ export const useLensAuthentication = () => {
   const { data: walletClient } = useWalletClient();
 
   useEffect(() => {
+    let isCurrent = true;
+
     const checkSession = async () => {
       const session = await lensService.resumeSession();
-      if (session) {
-        setSessionClient(session);
+      if (!isCurrent || !session) return;
 
-        if (!initialized && address) {
-          await initialize(address);
-        }
+      setSessionClient(session);
+      if (!initialized && address) {
+        await initialize(address);
       }
     };
 
     if (!initialized && isConnected) {
-      checkSession();
+      checkSession().catch(console.error);
     }
+
+    return () => {
+      isCurrent = false;
+    };
   }, [initialize, initialized, setSessionClient, address, isConnected]);
 
   const login = useCallback(async () => {
