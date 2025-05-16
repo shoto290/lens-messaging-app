@@ -1,20 +1,20 @@
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader } from "../ui/card";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerFooter,
   DrawerTitle,
   DrawerTrigger,
 } from "../ui/drawer";
+import { Community } from "@/services/community-service.types";
+import { DiscoverCommunityDrawerContent } from "./discover-community-drawer-content";
 
 interface DiscoverCommunityDrawerProps {
   children: React.ReactNode;
+  community: Community;
 }
 
 export function DiscoverCommunityDrawer({
   children,
+  community,
 }: DiscoverCommunityDrawerProps) {
   return (
     <Drawer>
@@ -23,20 +23,9 @@ export function DiscoverCommunityDrawer({
         <DrawerTitle hidden className="text-center">
           Join community
         </DrawerTitle>
-        <DrawerContent>
-          <div className="px-3">
-            <div className="border border-border rounded-xl overflow-hidden">
-              {children}
-            </div>
-          </div>
-          <DrawerFooter>
-            <DrawerClose asChild>
-              <Button variant="secondary" size="rounded" className="w-full">
-                Join the community
-              </Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
+        <DiscoverCommunityDrawerContent community={community}>
+          {children}
+        </DiscoverCommunityDrawerContent>
       </DrawerContent>
     </Drawer>
   );
