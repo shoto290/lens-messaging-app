@@ -2,16 +2,12 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { chatService } from "@/services/chat-service";
-import { useChatStore } from "@/stores/chat-store";
 
-export function useChatMessages(communityId: string | null) {
-  const { activeCommunity } = useChatStore();
-  const currentCommunityId = communityId || activeCommunity?.address;
-
+export function useChatMessages(communityFeedAddress: string) {
   const query = useQuery({
-    queryKey: ["messages", currentCommunityId],
-    queryFn: () => chatService.getMessages(currentCommunityId),
-    enabled: !!currentCommunityId,
+    queryKey: ["messages", communityFeedAddress],
+    queryFn: () => chatService.getMessages(communityFeedAddress),
+    enabled: !!communityFeedAddress,
     refetchInterval: 5000,
   });
 

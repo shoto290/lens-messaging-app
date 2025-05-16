@@ -1,3 +1,7 @@
+import { fetchPosts } from "@lens-protocol/client/actions";
+import { lensClient } from "./lens-service";
+import { AnyPost, evmAddress } from "@lens-protocol/client";
+
 export interface Message {
   id: string;
   text: string;
@@ -73,10 +77,20 @@ const mockMessages: Message[][] = [
   ],
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getMessages = async (communityId: string): Promise<Message[]> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return mockMessages[0] || [];
+const getMessages = async (
+  communityFeedAddress: string
+): Promise<readonly AnyPost[]> => {
+  const result = await fetchPosts(lensClient, {
+    filter: {
+      feeds: [{ feed: evmAddress(communityFeedAddress) }],
+    },
+  });
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return result.value.items.toReversed();
 };
 
 const sendMessage = async (

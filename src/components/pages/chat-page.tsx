@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -12,13 +13,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useSendMessages } from "@/hooks/chat/use-send-messages";
 import { Skeleton } from "../ui/skeleton";
 import { formatTime } from "@/lib/utils";
+import { useAccount } from "@/hooks/use-account";
+import { groveService } from "@/services/grove-service";
+import { Post } from "@lens-protocol/client";
 
 export function ChatPage() {
   const [messageText, setMessageText] = useState("");
+  const { account } = useAccount();
   const { activeCommunity } = useChatStore();
   const { setActiveSection } = useNavigation();
-  const { messages, isPending } = useChatMessages(null);
-  const { sendMessage } = useSendMessages(activeCommunity?.address);
+  const { messages, isPending } = useChatMessages(
+    activeCommunity?.feed?.address
+  );
+  const { sendMessage } = useSendMessages(activeCommunity?.feed?.address);
 
   if (!activeCommunity) {
     setActiveSection(Section.MESSAGES);
@@ -63,7 +70,8 @@ export function ChatPage() {
                 </div>
               ))
           : messages.map((message) => {
-              const isMe = message.sender.id === "user-1";
+              const isMe =
+                message.author.username?.id === account?.account.username?.id;
 
               return (
                 <div
@@ -73,11 +81,15 @@ export function ChatPage() {
                   {!isMe && (
                     <Avatar className="h-10 w-10 rounded-full">
                       <AvatarImage
-                        src={message.sender.avatar}
-                        alt={message.sender.username}
+                        src={groveService.resolveImage(
+                          message.author.metadata?.picture
+                        )}
+                        alt={message.author.metadata?.name || "No name"}
                       />
                       <AvatarFallback>
-                        {message.sender.username.substring(0, 2).toUpperCase()}
+                        {message.author.metadata?.name
+                          ?.substring(0, 2)
+                          .toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   )}
@@ -93,9 +105,11 @@ export function ChatPage() {
                       }`}
                     >
                       <span className="font-semibold">
-                        {isMe ? "You" : message.sender.username}
+                        {isMe ? "You" : message.author.metadata?.name}
                       </span>
-                      <span>{formatTime(message.timestamp)}</span>
+                      <span>
+                        {formatTime(new Date(message.timestamp.toString()))}
+                      </span>
                     </div>
 
                     <div
@@ -105,7 +119,7 @@ export function ChatPage() {
                           : "bg-muted rounded-tl-none"
                       }`}
                     >
-                      {message.text}
+                      {(message as any).metadata?.content}
                     </div>
                   </div>
                 </div>
