@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useChatStore } from "@/stores/chat-store";
 import { Button } from "../ui/button";
 import { Icons } from "../icons";
@@ -18,6 +18,8 @@ import { groveService } from "@/services/grove-service";
 
 export function ChatPage() {
   const [messageText, setMessageText] = useState("");
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const { account } = useAccount();
   const { activeCommunity } = useChatStore();
   const { setActiveSection } = useNavigation();
@@ -25,6 +27,21 @@ export function ChatPage() {
     activeCommunity?.feed?.address
   );
   const { sendMessage } = useSendMessages(activeCommunity?.feed?.address);
+
+  useEffect(() => {
+    if (messagesContainerRef.current && shouldScrollToBottom) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
+    }
+  }, [messages, shouldScrollToBottom]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShouldScrollToBottom(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   if (!activeCommunity) {
     setActiveSection(Section.MESSAGES);
@@ -35,6 +52,8 @@ export function ChatPage() {
     if (!messageText.trim()) return;
     sendMessage(messageText);
     setMessageText("");
+    // Enable auto-scrolling when sending a new message
+    setShouldScrollToBottom(true);
   };
 
   return (
@@ -57,11 +76,7 @@ export function ChatPage() {
 
       <div
         className="flex-grow overflow-y-auto p-4 flex flex-col gap-4"
-        ref={(el) => {
-          if (el) {
-            el.scrollTop = el.scrollHeight;
-          }
-        }}
+        ref={messagesContainerRef}
       >
         {isPending
           ? Array(3)
