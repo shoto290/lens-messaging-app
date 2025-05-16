@@ -5,9 +5,9 @@ import {
   CompassIcon,
   DoorOpenIcon,
   Loader2Icon,
-  MessageSquareIcon,
   ChevronLeftIcon,
   SendIcon,
+  MessagesSquareIcon,
 } from "lucide-react";
 
 interface IconProps {
@@ -18,7 +18,7 @@ const Loader = ({ ...props }: IconProps) => <Loader2Icon {...props} />;
 
 const Discover = ({ ...props }: IconProps) => <CompassIcon {...props} />;
 
-const Message = ({ ...props }: IconProps) => <MessageSquareIcon {...props} />;
+const Message = ({ ...props }: IconProps) => <MessagesSquareIcon {...props} />;
 
 const Create = ({ ...props }: IconProps) => <CirclePlusIcon {...props} />;
 

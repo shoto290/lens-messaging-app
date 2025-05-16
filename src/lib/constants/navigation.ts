@@ -3,16 +3,16 @@ import { NavItem, Section } from "../types/navigation";
 
 export const NAVBAR_ITEMS: NavItem[] = [
   {
-    id: "discover",
-    icon: Icons.Discover,
-    label: "Discover",
-    section: Section.DISCOVER,
-  },
-  {
     id: "messages",
     icon: Icons.Message,
     label: "Messages",
     section: Section.MESSAGES,
+  },
+  {
+    id: "discover",
+    icon: Icons.Discover,
+    label: "Discover",
+    section: Section.DISCOVER,
   },
   {
     id: "create",

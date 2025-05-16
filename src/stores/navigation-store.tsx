@@ -13,7 +13,7 @@ const NavigationContext = createContext<NavigationContextType | undefined>(
 );
 
 export function NavigationProvider({ children }: { children: ReactNode }) {
-  const [activeSection, setActiveSection] = useState<Section>(Section.DISCOVER);
+  const [activeSection, setActiveSection] = useState<Section>(Section.MESSAGES);
 
   return (
     <NavigationContext.Provider value={{ activeSection, setActiveSection }}>

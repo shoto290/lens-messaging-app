@@ -44,8 +44,8 @@ export function SettingsDrawer() {
           Settings
         </DrawerTitle>
         <div className="flex flex-col h-full">
-          <div className="flex-grow overflow-y-auto px-4">
-            <div className="space-y-4 pt-1">
+          <div className="flex-grow overflow-y-auto px-3">
+            <div className="space-y-3 pt-1">
               <ProfileSettingsCard
                 avatarSrc={account?.account.metadata?.picture}
                 name={account?.account.metadata?.name || ""}
