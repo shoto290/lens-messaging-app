@@ -20,7 +20,7 @@ This is a Next.js 15 application with App Router using React 19 and TypeScript.
 
 - [src/app/layout.tsx](mdc:src/app/layout.tsx): Root layout with providers
 - [src/app/(root)/layout.tsx](mdc:src/app/(root)/layout.tsx): Main application layout
-- [src/app/providers.tsx](mdc:src/app/providers.tsx): React context providers
+- [src/app/provider.tsx](mdc:src/app/provider.tsx): React context providers
 
 ## Tech Stack
 
