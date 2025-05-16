@@ -59,6 +59,31 @@ const getMembersOfCommunity = async (communityId: string) => {
   return result.value;
 };
 
+const isMemberOfCommunity = async (
+  communityAddress: string,
+  username: string,
+  namespaces: string,
+  address: string
+) => {
+  const result = await fetchGroupMembers(lensClient, {
+    group: evmAddress(communityAddress),
+    filter: {
+      searchBy: {
+        localNameQuery: username,
+        namespaces: [evmAddress(namespaces)],
+      },
+    },
+  });
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return result.value.items.some(
+    (member) => member.account.address === address
+  );
+};
+
 const canJoinCommunity = async (communityAddress: string) => {
   if (!communityAddress) {
     return {
@@ -150,7 +175,6 @@ const joinCommunity = async (
   walletClient: ViemWalletClient,
   communityAddress: string
 ) => {
-  // First check if the user can join and if approval is required
   const canJoinResult = await canJoinCommunity(communityAddress);
 
   if (!canJoinResult.canJoin) {
@@ -190,4 +214,5 @@ export const communityService = {
   getTrendingCommunities,
   canJoinCommunity,
   joinCommunity,
+  isMemberOfCommunity,
 };
