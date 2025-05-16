@@ -55,7 +55,14 @@ export function ChatPage() {
         </div>
       </div>
 
-      <div className="flex-grow overflow-y-auto p-4 flex flex-col gap-4">
+      <div
+        className="flex-grow overflow-y-auto p-4 flex flex-col gap-4"
+        ref={(el) => {
+          if (el) {
+            el.scrollTop = el.scrollHeight;
+          }
+        }}
+      >
         {isPending
           ? Array(3)
               .fill(0)

@@ -3,6 +3,7 @@ import { lensClient, lensService } from "./lens-service";
 import { AnyPost, evmAddress, uri } from "@lens-protocol/client";
 import { textOnly } from "@lens-protocol/metadata";
 import { groveService } from "./grove-service";
+import { sleep } from "@/lib/utils";
 
 export interface Message {
   id: string;
@@ -56,6 +57,8 @@ const sendMessage = async (
     if (result.isErr()) {
       throw result.error;
     }
+
+    await sleep(2000);
 
     return result.value;
   } catch (error) {
