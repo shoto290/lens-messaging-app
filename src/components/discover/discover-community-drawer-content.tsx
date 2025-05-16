@@ -16,7 +16,7 @@ export function DiscoverCommunityDrawerContent({
   children,
   community,
 }: DiscoverCommunityDrawerContentProps) {
-  const { joinCommunity, isPending } = useJoinCommunity();
+  const { joinCommunity, isPending } = useJoinCommunity({ community });
   const { data: canJoinData, isLoading: isCheckingJoinStatus } =
     useCanJoinCommunity(community.address);
 

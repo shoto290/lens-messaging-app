@@ -6,14 +6,21 @@ import { Section } from "@/lib/types/navigation";
 import { useWalletClient } from "wagmi";
 import { queryClient } from "@/app/provider";
 import { communityService } from "@/services/community-service";
+import { Community } from "@/services/community-service.types";
+import { useChatStore } from "@/stores/chat-store";
 
-export function useJoinCommunity() {
+interface UseJoinCommunityProps {
+  community: Community;
+}
+
+export function useJoinCommunity({ community }: UseJoinCommunityProps) {
   const { sessionClient } = useAccountStore();
   const { setActiveSection } = useNavigation();
   const { data: walletClient } = useWalletClient();
+  const { setActiveCommunity } = useChatStore();
 
   const joinMutation = useMutation({
-    mutationFn: async (communityAddress: string) => {
+    mutationFn: async () => {
       if (!sessionClient) {
         throw new Error("You must be authenticated to join a community");
       }
@@ -25,20 +32,13 @@ export function useJoinCommunity() {
       return communityService.joinCommunity(
         sessionClient,
         walletClient,
-        communityAddress
+        community.address
       );
     },
-    onSuccess: (data) => {
-      // Navigate to messages section if direct join
-      if (!data.requiresApproval) {
-        setActiveSection(Section.MESSAGES);
-      }
-
-      // Invalidate communities queries to refresh the data
+    onSuccess: async (data) => {
       queryClient.invalidateQueries({ queryKey: ["user-communities"] });
       queryClient.invalidateQueries({ queryKey: ["community-members"] });
 
-      // Show appropriate success message
       if (data.requiresApproval) {
         toast.success(
           "Join request submitted successfully! Waiting for approval."
@@ -46,18 +46,20 @@ export function useJoinCommunity() {
       } else {
         toast.success("Successfully joined the community!");
       }
+
+      if (!data.requiresApproval) {
+        setActiveCommunity(community);
+        setActiveSection(Section.CHAT);
+      }
     },
     onError: (error: Error) => {
       toast.error(`Failed to join community: ${error.message}`);
     },
   });
 
-  const joinCommunity = (communityAddress: string) => {
-    joinMutation.mutate(communityAddress);
-  };
-
   return {
     ...joinMutation,
-    joinCommunity,
+    joinCommunity: joinMutation.mutate,
+    joinCommunityAsync: joinMutation.mutateAsync,
   };
 }
