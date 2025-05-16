@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useOptimistic } from "react";
 import { useChatStore } from "@/stores/chat-store";
 import { Button } from "../ui/button";
 import { Icons } from "../icons";
@@ -26,14 +26,37 @@ export function ChatPage() {
   const { messages, isPending } = useChatMessages(
     activeCommunity?.feed?.address
   );
-  const { sendMessage } = useSendMessages(activeCommunity?.feed?.address);
+  const { sendMessageAsync } = useSendMessages(activeCommunity?.feed?.address);
+
+  type OptimisticAction =
+    | { type: "add"; message: any }
+    | { type: "remove"; id: string }
+    | { type: "confirm"; id: string };
+
+  const [optimisticMessages, updateOptimisticMessages] = useOptimistic(
+    messages,
+    (state: any[], action: OptimisticAction) => {
+      switch (action.type) {
+        case "add":
+          return [...state, action.message];
+        case "remove":
+          return state.filter((m) => m.id !== action.id);
+        case "confirm":
+          return state.map((m) =>
+            m.id === action.id ? { ...m, pending: false } : m
+          );
+        default:
+          return state;
+      }
+    }
+  );
 
   useEffect(() => {
     if (messagesContainerRef.current && shouldScrollToBottom) {
       messagesContainerRef.current.scrollTop =
         messagesContainerRef.current.scrollHeight;
     }
-  }, [messages, shouldScrollToBottom]);
+  }, [optimisticMessages, shouldScrollToBottom]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -48,12 +71,34 @@ export function ChatPage() {
     return null;
   }
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!messageText.trim()) return;
-    sendMessage(messageText);
+
+    const optimisticId = `optimistic-${Date.now()}`;
+    updateOptimisticMessages({
+      type: "add",
+      message: {
+        id: optimisticId,
+        author: account?.account ?? { metadata: { name: "You" } },
+        metadata: { content: messageText },
+        timestamp: new Date().toISOString(),
+        pending: true,
+      },
+    });
+
     setMessageText("");
-    // Enable auto-scrolling when sending a new message
     setShouldScrollToBottom(true);
+
+    try {
+      const result = await sendMessageAsync(messageText);
+      if (result === null) {
+        updateOptimisticMessages({ type: "remove", id: optimisticId });
+      } else {
+        updateOptimisticMessages({ type: "confirm", id: optimisticId });
+      }
+    } catch (err) {
+      updateOptimisticMessages({ type: "remove", id: optimisticId });
+    }
   };
 
   return (
@@ -90,14 +135,16 @@ export function ChatPage() {
                   </div>
                 </div>
               ))
-          : messages.map((message) => {
+          : optimisticMessages.map((message) => {
               const isMe =
                 message.author.username?.id === account?.account.username?.id;
 
               return (
                 <div
                   key={message.id}
-                  className={`flex gap-3 ${isMe ? "flex-row-reverse" : ""}`}
+                  className={`flex gap-3 ${isMe ? "flex-row-reverse" : ""} ${
+                    (message as any).pending ? "opacity-50" : ""
+                  }`}
                 >
                   {!isMe && (
                     <Avatar className="h-10 w-10 rounded-full">
