@@ -32,7 +32,7 @@ export function ChatPage() {
   };
 
   return (
-    <div className="container flex flex-col h-full">
+    <div className="container flex flex-col absolute inset-0 z-10 bg-background">
       <div className="border-border border-b p-[12px] pt-[16px] flex justify-between items-center">
         <div className="flex items-center gap-3">
           <Button
