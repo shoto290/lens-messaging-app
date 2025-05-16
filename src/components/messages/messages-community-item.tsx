@@ -4,8 +4,8 @@ import { Badge } from "../ui/badge";
 import { useChatStore } from "@/stores/chat-store";
 import { useNavigation } from "@/stores/navigation-store";
 import { Section } from "@/lib/types/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Community } from "@/services/community-service.types";
+import { CommunityAvatar } from "../community/community-avatar";
 
 interface MessagesCommunityItemProps {
   community: Community;
@@ -28,12 +28,7 @@ export function MessagesCommunityItem({
       onClick={handleOpenChat}
     >
       <div className="flex items-center gap-3">
-        <Avatar>
-          <AvatarImage src={community.metadata?.icon} />
-          <AvatarFallback>
-            {community.metadata?.name?.slice(0, 2).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
+        <CommunityAvatar community={community} />
         <div className="flex flex-col">
           <h3 className="text-sm font-bold font-mono">
             {community.metadata?.name}

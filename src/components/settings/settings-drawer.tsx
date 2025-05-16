@@ -28,7 +28,7 @@ export function SettingsDrawer() {
     <Drawer>
       <DrawerTrigger asChild>
         <Button className="size-[32px]" variant="ghost" aria-label="Profile">
-          <Avatar>
+          <Avatar className="rounded-full">
             <AvatarImage
               src={account?.account.metadata?.picture}
               alt="Profile"

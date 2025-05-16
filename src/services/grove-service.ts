@@ -37,7 +37,15 @@ const uploadJson = async <T extends Record<string, unknown>>(
   }
 };
 
+const resolveImage = (uri: string): string => {
+  if (uri?.startsWith("lens://")) {
+    return storageClient.resolve(uri);
+  }
+  return uri;
+};
+
 export const groveService = {
   uploadImage,
   uploadJson,
+  resolveImage,
 };
