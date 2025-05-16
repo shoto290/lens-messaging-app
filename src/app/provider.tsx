@@ -1,34 +1,40 @@
 "use client";
 
 import { WagmiProvider, createConfig, http } from "wagmi";
-import { mainnet } from "wagmi/chains";
+import { chains } from "@lens-chain/sdk/viem";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
-import { env } from "@/env";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { ReactNode } from "react";
+import { ThemeProvider } from "next-themes";
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
 const config = createConfig(
   getDefaultConfig({
-    chains: [mainnet],
+    chains: [chains.mainnet],
     transports: {
-      [mainnet.id]: http(),
+      [chains.mainnet.id]: http(chains.mainnet.rpcUrls.default.http[0]!),
     },
-
-    walletConnectProjectId: env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
-
-    appName: "Your App Name",
-
-    appDescription: "Your App Description",
-    appUrl: "https://family.co",
-    appIcon: "https://family.co/logo.png",
+    walletConnectProjectId:
+      process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "",
+    appName: "Lens Messaging App",
+    appDescription: "A messaging app built on Lens Protocol",
+    appUrl: "https://lens-messaging-app.vercel.app",
+    appIcon: "https://lens-messaging-app.vercel.app/icon.png",
+    ssr: true,
   })
 );
 
-export const queryClient = new QueryClient();
-
-export const Provider = ({ children }: { children: React.ReactNode }) => {
+export function Providers({ children }: { children: ReactNode }) {
   return (
-    <NextThemesProvider
+    <ThemeProvider
       attribute="class"
       defaultTheme="dark"
       enableSystem
@@ -39,6 +45,6 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
           <ConnectKitProvider>{children}</ConnectKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
-    </NextThemesProvider>
+    </ThemeProvider>
   );
-};
+}

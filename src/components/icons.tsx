@@ -8,6 +8,7 @@ import {
   ChevronLeftIcon,
   SendIcon,
   MessagesSquareIcon,
+  UsersIcon,
 } from "lucide-react";
 
 interface IconProps {
@@ -32,6 +33,7 @@ const ChevronLeft = ({ ...props }: IconProps) => <ChevronLeftIcon {...props} />;
 
 const Send = ({ ...props }: IconProps) => <SendIcon {...props} />;
 
+const Users = ({ ...props }: IconProps) => <UsersIcon {...props} />;
 export const Icons = {
   Loader,
   Discover,
@@ -42,4 +44,5 @@ export const Icons = {
   Door,
   ChevronLeft,
   Send,
+  Users,
 };

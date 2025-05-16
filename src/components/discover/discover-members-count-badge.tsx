@@ -1,3 +1,4 @@
+import { Icons } from "../icons";
 import { Badge } from "../ui/badge";
 
 interface DiscoverMembersCountBadgeProps {
@@ -7,5 +8,10 @@ interface DiscoverMembersCountBadgeProps {
 export function DiscoverMembersCountBadge({
   count,
 }: DiscoverMembersCountBadgeProps) {
-  return <Badge variant={"outline"}>{count}</Badge>;
+  return (
+    <Badge variant={"outline"}>
+      <Icons.Users className="size-4" />
+      {count}
+    </Badge>
+  );
 }

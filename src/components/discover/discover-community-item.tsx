@@ -14,7 +14,7 @@ export function DiscoverCommunityItem({
   const { data: members } = useCommunityMembers(community.address);
 
   return (
-    <DiscoverCommunityDrawer>
+    <DiscoverCommunityDrawer community={community}>
       <div className="w-full border-b border-border flex flex-row justify-between items-center p-[16px] hover:bg-accent/50 transition-colors cursor-pointer">
         <div className="flex items-center gap-3">
           <CommunityAvatar community={community} />
