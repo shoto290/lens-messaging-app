@@ -15,7 +15,6 @@ import { Skeleton } from "../ui/skeleton";
 import { formatTime } from "@/lib/utils";
 import { useAccount } from "@/hooks/use-account";
 import { groveService } from "@/services/grove-service";
-import { Post } from "@lens-protocol/client";
 
 export function ChatPage() {
   const [messageText, setMessageText] = useState("");
