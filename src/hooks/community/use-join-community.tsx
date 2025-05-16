@@ -19,7 +19,11 @@ export function useJoinCommunity({ community }: UseJoinCommunityProps) {
   const { data: walletClient } = useWalletClient();
   const { setActiveCommunity } = useChatStore();
 
-  const joinMutation = useMutation({
+  const joinMutation = useMutation<
+    Awaited<ReturnType<typeof communityService.joinCommunity>>,
+    Error,
+    void
+  >({
     mutationFn: async () => {
       if (!sessionClient) {
         throw new Error("You must be authenticated to join a community");

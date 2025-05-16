@@ -29,7 +29,7 @@ export function DiscoverCommunityDrawerContent({
   const { setActiveSection } = useNavigation();
 
   const handleJoinCommunity = () => {
-    joinCommunity(community.address);
+    joinCommunity();
   };
 
   const handleGoToChat = () => {
