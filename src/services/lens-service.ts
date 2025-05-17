@@ -68,17 +68,29 @@ const getLastLoggedInAccount = async (address: string) => {
 
 const login = async (
   address: string,
-  walletClient: ViemWalletClient
+  walletClient: ViemWalletClient,
+  lensAccountAddress?: string
 ): Promise<SessionClient | null> => {
   try {
-    const accountResult = await getUserByAddress(address);
+    let accountToLogin: AccountAvailable | null = null;
+
+    if (lensAccountAddress) {
+      // If a specific Lens account address is provided, find it among available accounts
+      const accounts = await getAvailableAccounts(address);
+      accountToLogin =
+        accounts.find((acc) => acc.account.address === lensAccountAddress) ||
+        null;
+    } else {
+      // Fallback to getting the first available account
+      accountToLogin = await getUserByAddress(address);
+    }
 
     const authenticated = await lensClient.login({
-      ...(accountResult
+      ...(accountToLogin
         ? {
             accountOwner: {
               owner: evmAddress(address),
-              account: evmAddress(accountResult.account.address),
+              account: evmAddress(accountToLogin.account.address),
               app: evmAddress(env.NEXT_PUBLIC_LENS_APP_ID),
             },
           }
@@ -179,6 +191,26 @@ const updateAccountMetadata = async (
   return "value" in result ? result.value : result;
 };
 
+const getAvailableAccounts = async (
+  address: string
+): Promise<AccountAvailable[]> => {
+  try {
+    const result = await fetchAccountsAvailable(lensClient, {
+      managedBy: evmAddress(address),
+      includeOwned: true,
+    });
+
+    if (result.isOk()) {
+      return [...result.value.items];
+    }
+
+    return [];
+  } catch (error) {
+    console.error("Failed to fetch available Lens accounts:", error);
+    return [];
+  }
+};
+
 export const lensService = {
   getUserByAddress,
   login,
@@ -187,6 +219,7 @@ export const lensService = {
   getCurrentSession,
   getLastLoggedInAccount,
   updateAccountMetadata,
+  getAvailableAccounts,
   get client() {
     return lensClient;
   },

@@ -17,7 +17,7 @@ export function UserAvatar({ account }: UserAvatarProps) {
   }, [account.metadata?.name]);
 
   return (
-    <Avatar>
+    <Avatar className="rounded-full">
       <AvatarImage src={profilePicture} />
       <AvatarFallback>{fallback}</AvatarFallback>
     </Avatar>
