@@ -10,6 +10,7 @@ import {
   MessagesSquareIcon,
   UsersIcon,
   ArrowLeftIcon,
+  PlusCircleIcon,
 } from "lucide-react";
 
 interface IconProps {
@@ -38,6 +39,8 @@ const Users = ({ ...props }: IconProps) => <UsersIcon {...props} />;
 
 const ArrowLeft = ({ ...props }: IconProps) => <ArrowLeftIcon {...props} />;
 
+const Plus = ({ ...props }: IconProps) => <PlusCircleIcon {...props} />;
+
 export const Icons = {
   Loader,
   Discover,
@@ -50,4 +53,5 @@ export const Icons = {
   Send,
   Users,
   ArrowLeft,
+  Plus,
 };

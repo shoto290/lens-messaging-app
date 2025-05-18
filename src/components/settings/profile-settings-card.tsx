@@ -14,7 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,6 +22,7 @@ import { Loader2 } from "lucide-react";
 import { useLensProfileUpdateMetadata } from "@/hooks/lens/use-lens-profile-update-metadata";
 import { useLensAvatarUpload } from "@/hooks/lens/use-lens-avatar-upload";
 import { toast } from "sonner";
+import { UserAvatar } from "../user/user-avatar";
 
 const profileFormSchema = z.object({
   name: z.string().min(2, {
@@ -119,10 +119,7 @@ export const ProfileSettingsCard = forwardRef<
       </CardHeader>
       <CardContent>
         <div className="flex justify-between items-center">
-          <Avatar className="h-16 w-16">
-            <AvatarImage src={avatarSrc} />
-            <AvatarFallback>{name.substring(0, 2)}</AvatarFallback>
-          </Avatar>
+          <UserAvatar className="size-16" icon={avatarSrc} name={name} />
           <div className="mt-2 flex gap-2">
             <input
               type="file"

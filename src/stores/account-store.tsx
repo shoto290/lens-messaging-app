@@ -12,7 +12,7 @@ interface AccountState {
 
 interface AccountActions {
   initialize: (address?: string) => Promise<void>;
-  getMe: (address: string) => Promise<void>;
+  getMe: (address?: string) => Promise<void>;
   setSessionClient: (client: SessionClient | null) => void;
   updateAuthStatus: (isAuthenticated: boolean) => void;
   reset: () => void;
