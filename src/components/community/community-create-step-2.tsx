@@ -13,7 +13,7 @@ export function CommunityCreateStep2() {
         <CardTitle className="text-lg font-medium">Community Summary</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="w-full border border-border rounded-lg flex flex-row justify-between items-center p-[16px] hover:bg-accent/50 transition-colors cursor-pointer">
+        <div className="w-full border border-border rounded-lg flex flex-row justify-between items-center p-3 hover:bg-accent/50 transition-colors cursor-pointer">
           <div className="flex items-center gap-3">
             <CommunityAvatar
               name={communityInfo.name}
@@ -29,7 +29,7 @@ export function CommunityCreateStep2() {
             </div>
           </div>
           <div className="flex items-center gap-2 pl-2">
-            <DiscoverMembersCountBadge count={0} />
+            <DiscoverMembersCountBadge count={1} />
           </div>
         </div>
       </CardContent>
