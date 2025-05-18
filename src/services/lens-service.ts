@@ -7,7 +7,6 @@ import {
   Account,
   AccountMetadata,
   uri,
-  never,
 } from "@lens-protocol/client";
 import { AccountFragment } from "./lens-service.fragments";
 import {
@@ -260,17 +259,21 @@ const createProfile = async (
     .andThen(handleOperationWith(walletClient))
     .andThen(sessionClientInstance.waitForTransaction)
     .andThen((txHash) => fetchAccount(sessionClientInstance!, { txHash }))
-    .andThen((account) =>
-      sessionClientInstance!.switchAccount({
-        account: account?.address ?? never("Account not found"),
-      })
-    );
+    .andThen((account) => {
+      if (!account) {
+        throw new Error("Account not found after creation");
+      }
+
+      return sessionClientInstance!.switchAccount({
+        account: account.address,
+      });
+    });
 
   if ("isErr" in result && result.isErr()) {
     throw new Error(`Failed to create profile: ${result.error.message}`);
   }
 
-  return result.value;
+  return sessionClientInstance;
 };
 
 export const lensService = {

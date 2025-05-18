@@ -1,12 +1,11 @@
 import { queryClient } from "@/app/provider";
-import { sleep } from "@/lib/utils";
 import { useAccountCreateStore } from "@/stores/account-create-store";
 import { useAccountStore } from "@/stores/account-store";
 import { useMutation } from "@tanstack/react-query";
 import { useAccount, useWalletClient } from "wagmi";
 
 export function useCreateAccount() {
-  const { setSessionClient } = useAccountStore();
+  const { setSessionClient, getMe } = useAccountStore();
   const { createAccount } = useAccountCreateStore();
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
@@ -24,12 +23,13 @@ export function useCreateAccount() {
       const sessionClient = await createAccount(address, walletClient);
       setSessionClient(sessionClient);
 
+      await getMe();
+
       return true;
     },
     onSuccess: async () => {
-      await sleep(1000);
-
       queryClient.invalidateQueries({ queryKey: ["account"] });
+      queryClient.invalidateQueries({ queryKey: ["lens-accounts"] });
     },
   });
 
