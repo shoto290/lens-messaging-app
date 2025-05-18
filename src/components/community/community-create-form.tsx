@@ -8,6 +8,7 @@ import { CommunityCreateStep2 } from "./community-create-step-2";
 import { CommunityCreateStepper } from "./community-create-stepper";
 import { BottomActionBar } from "./bottom-action-bar";
 import { useCreateCommunity } from "@/hooks/community/use-create-community";
+import { toast } from "sonner";
 
 export function CommunityCreateForm() {
   const {
@@ -17,8 +18,9 @@ export function CommunityCreateForm() {
     prevStep,
     isValid,
     communityInfo,
+    reset,
   } = useCommunityCreateStore();
-  const { createCommunity, isPending } = useCreateCommunity();
+  const { createCommunityAsync, isPending } = useCreateCommunity();
 
   useEffect(() => {
     validateForm();
@@ -35,13 +37,20 @@ export function CommunityCreateForm() {
     }
   };
 
-  const handleAction = () => {
+  const handleAction = async () => {
     if (currentStep === CommunityCreateStep.STEP_2) {
-      createCommunity({
-        name: communityInfo.name,
-        description: communityInfo.description,
-        avatar: communityInfo.avatar,
-      });
+      try {
+        await createCommunityAsync({
+          name: communityInfo.name,
+          description: communityInfo.description,
+          icon: communityInfo.avatar,
+        });
+
+        reset();
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to create community");
+      }
     } else {
       nextStep();
     }

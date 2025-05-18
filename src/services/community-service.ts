@@ -222,8 +222,8 @@ const createCommunity = async (
 ): Promise<Group | null> => {
   const metadata = group({
     name: options.name,
-    description: options.description,
-    icon: options.icon,
+    description: options.description || undefined,
+    icon: options.icon || undefined,
   });
 
   const metadataUri = await groveService.uploadJson(metadata);

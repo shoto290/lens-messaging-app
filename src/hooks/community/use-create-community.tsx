@@ -40,8 +40,6 @@ export function useCreateCommunity() {
     onSuccess: (createdCommunity) => {
       queryClient.invalidateQueries({ queryKey: ["user-communities"] });
 
-      toast.success("Community created successfully!");
-
       setActiveCommunity(createdCommunity as Community);
       setActiveSection(Section.CHAT);
     },
