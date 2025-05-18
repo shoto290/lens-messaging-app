@@ -1,13 +1,24 @@
 import { useEffect } from "react";
-import { useCommunityCreateStore } from "@/stores/community-create-store";
+import {
+  useCommunityCreateStore,
+  CommunityCreateStep,
+} from "@/stores/community-create-store";
 import { CommunityCreateStep1 } from "./community-create-step-1";
 import { CommunityCreateStep2 } from "./community-create-step-2";
 import { CommunityCreateStepper } from "./community-create-stepper";
 import { BottomActionBar } from "./bottom-action-bar";
+import { useCreateCommunity } from "@/hooks/community/use-create-community";
 
 export function CommunityCreateForm() {
-  const { currentStep, validateForm, nextStep, prevStep, isValid } =
-    useCommunityCreateStore();
+  const {
+    currentStep,
+    validateForm,
+    nextStep,
+    prevStep,
+    isValid,
+    communityInfo,
+  } = useCommunityCreateStore();
+  const { createCommunity, isPending } = useCreateCommunity();
 
   useEffect(() => {
     validateForm();
@@ -24,9 +35,20 @@ export function CommunityCreateForm() {
     }
   };
 
-  console.log({
-    isValid,
-  });
+  const handleAction = () => {
+    if (currentStep === CommunityCreateStep.STEP_2) {
+      createCommunity({
+        name: communityInfo.name,
+        description: communityInfo.description,
+        avatar: communityInfo.avatar,
+      });
+    } else {
+      nextStep();
+    }
+  };
+
+  // Determine if we're on the final step
+  const isFinalStep = currentStep === CommunityCreateStep.STEP_2;
 
   return (
     <div className="w-full h-full flex flex-col justify-between flex-1">
@@ -38,8 +60,9 @@ export function CommunityCreateForm() {
 
       <BottomActionBar
         onBack={currentStep > 1 ? prevStep : undefined}
-        onNext={nextStep}
-        nextDisabled={!isValid}
+        onNext={handleAction}
+        nextLabel={isFinalStep ? "Create" : "Next"}
+        nextDisabled={!isValid || (isFinalStep && isPending)}
         showBackButton={currentStep > 1}
       />
     </div>
