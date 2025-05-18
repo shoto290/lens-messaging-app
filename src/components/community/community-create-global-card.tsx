@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { forwardRef, useRef, useState, useEffect } from "react";
+import { forwardRef, useRef, useEffect } from "react";
 
 import {
   Form,
@@ -20,8 +20,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useCommunityCreateStore } from "@/stores/community-create-store";
-import { groveService } from "@/services/grove-service";
 import { CommunityAvatar } from "./community-avatar";
+import { useCommunityAvatarUpload } from "@/hooks/community/use-community-avatar-upload";
 
 const communityCreateFormSchema = z.object({
   name: z.string(),
@@ -46,7 +46,8 @@ export const CommunityCreateGlobalCard = forwardRef<
 >(({ avatarSrc, name, bio }) => {
   const { updateCommunityInfo } = useCommunityCreateStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const { uploadAvatarAsync, isUploading: isUploadingAvatar } =
+    useCommunityAvatarUpload();
 
   const defaultValues: Partial<CommunityCreateFormValues> = {
     name: name,
@@ -87,15 +88,11 @@ export const CommunityCreateGlobalCard = forwardRef<
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      setIsUploadingAvatar(true);
       try {
-        const pictureUri = await groveService.uploadImage(file);
-        updateCommunityInfo({ avatar: pictureUri });
+        await uploadAvatarAsync(file);
       } catch (error) {
         console.error("Error uploading avatar:", error);
         toast.error("Error uploading avatar");
-      } finally {
-        setIsUploadingAvatar(false);
       }
     }
   };
