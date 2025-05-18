@@ -7,70 +7,55 @@ import { Icons } from "../icons";
 import { useLensAuthentication } from "@/hooks/lens/use-lens-authentication";
 import { useDisconnect } from "@/hooks/use-disconnect";
 import { useAccount as useWagmiAccount } from "wagmi";
+import { ChooseProfile } from "../profile/choose-profile";
 
 export function ConnectNavbar() {
   const { isConnected } = useWagmiAccount();
-  const { isAuthenticated, login, isPending } = useLensAuthentication();
+  const { isAuthenticated, loginAsync, isPending } = useLensAuthentication();
   const { disconnect } = useDisconnect();
 
+  const handleLogin = (lensAccountAddress: string): Promise<boolean> => {
+    return loginAsync(lensAccountAddress);
+  };
+
   return (
-    <Navbar>
-      <ConnectKitButton.Custom>
-        {({ show, isConnecting }) =>
-          !isConnected ? (
-            <Button
-              className="w-full"
-              onClick={show}
-              disabled={isConnecting || isConnected || isPending}
-            >
-              {!isConnecting ? (
-                <>
-                  Connect Wallet
-                  <Icons.ArrowRight className="size-4" />
-                </>
-              ) : (
-                <>
-                  Connect Wallet
-                  <Icons.Loader className="size-4 animate-spin " />
-                </>
-              )}
-            </Button>
-          ) : isConnected && !isAuthenticated ? (
-            <div className="w-full flex gap-2">
+    <div className="p-3 w-full">
+      <Navbar className="bg-card rounded-3xl p-3">
+        <ConnectKitButton.Custom>
+          {({ show, isConnecting }) =>
+            !isConnected ? (
               <Button
-                className="w-full flex-1"
-                onClick={() => login()}
-                disabled={isPending}
+                className="w-full"
+                onClick={show}
+                disabled={isConnecting || isConnected || isPending}
               >
-                {isPending ? (
+                {!isConnecting ? (
                   <>
-                    Authenticating with Lens
-                    <Icons.Loader className="size-4 animate-spin" />
+                    Connect Wallet
+                    <Icons.ArrowRight className="size-4" />
                   </>
                 ) : (
                   <>
-                    Authenticate with Lens
-                    <Icons.ArrowRight className="size-4" />
+                    Connect Wallet
+                    <Icons.Loader className="size-4 animate-spin " />
                   </>
                 )}
               </Button>
-              <Button
-                variant={"outline"}
-                className="w-fit"
-                onClick={() => disconnect()}
-                disabled={isPending}
-              >
-                <Icons.Door className="size-4" />
+            ) : isConnected && !isAuthenticated ? (
+              <ChooseProfile
+                login={handleLogin}
+                isPending={isPending}
+                disconnect={disconnect}
+              />
+            ) : (
+              <Button className="w-full" onClick={show}>
+                Loading...
+                <Icons.Loader className="size-4 animate-spin" />
               </Button>
-            </div>
-          ) : (
-            <Button className="w-full" onClick={show}>
-              Loading...
-              <Icons.Loader className="size-4 animate-spin" />
-            </Button>
-          )
-        }
-      </ConnectKitButton.Custom>
-    </Navbar>
+            )
+          }
+        </ConnectKitButton.Custom>
+      </Navbar>
+    </div>
   );
 }

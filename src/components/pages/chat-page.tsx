@@ -92,7 +92,7 @@ export function ChatPage() {
               ))
           : messages.map((message) => {
               const isMe =
-                message.author.username?.id === account?.account.username?.id;
+                message.author.username?.id === account?.username?.id;
 
               return (
                 <div

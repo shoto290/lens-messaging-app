@@ -1,11 +1,11 @@
 import { lensService } from "@/services/lens-service";
-import { AccountAvailable, SessionClient } from "@lens-protocol/client";
+import { Account, SessionClient } from "@lens-protocol/client";
 import { create } from "zustand";
 
 interface AccountState {
   initialized: boolean;
   hasAccount: boolean;
-  account: AccountAvailable | null;
+  account: Account | null;
   sessionClient: SessionClient | null;
   authenticated: boolean;
 }
@@ -52,9 +52,28 @@ export const useAccountStore = create<AccountStore>((set, get) => ({
     }
   },
 
-  getMe: async (address: string) => {
-    const account = await lensService.getUserByAddress(address);
-    set({ account, hasAccount: !!account });
+  getMe: async () => {
+    const { sessionClient } = get();
+
+    if (sessionClient) {
+      try {
+        const activeAccount = await lensService.getCurrentAccount(
+          sessionClient
+        );
+
+        if (activeAccount) {
+          set({ account: activeAccount, hasAccount: true });
+          return;
+        }
+      } catch (error) {
+        console.error("Failed to get current account:", error);
+      }
+    } else {
+      set({
+        account: null,
+        hasAccount: false,
+      });
+    }
   },
 
   setSessionClient: (client: SessionClient | null) => {

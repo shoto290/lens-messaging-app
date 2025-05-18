@@ -29,12 +29,9 @@ export function SettingsDrawer() {
       <DrawerTrigger asChild>
         <Button className="size-[32px]" variant="ghost" aria-label="Profile">
           <Avatar className="rounded-full">
-            <AvatarImage
-              src={account?.account.metadata?.picture}
-              alt="Profile"
-            />
+            <AvatarImage src={account?.metadata?.picture} alt="Profile" />
             <AvatarFallback>
-              {account?.account.metadata?.name?.substring(0, 2)}
+              {account?.metadata?.name?.substring(0, 2)}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -47,9 +44,9 @@ export function SettingsDrawer() {
           <div className="flex-grow overflow-y-auto px-3">
             <div className="space-y-3 pt-1">
               <ProfileSettingsCard
-                avatarSrc={account?.account.metadata?.picture}
-                name={account?.account.metadata?.name || ""}
-                bio={account?.account.metadata?.bio || ""}
+                avatarSrc={account?.metadata?.picture}
+                name={account?.metadata?.name || ""}
+                bio={account?.metadata?.bio || ""}
               />
               {/* <NotificationSettingsCard /> */}
             </div>
