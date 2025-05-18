@@ -4,12 +4,15 @@ import {
   fetchGroup,
   joinGroup,
   requestGroupMembership,
+  createGroup,
 } from "@lens-protocol/client/actions";
 import { lensClient } from "./lens-service";
-import { evmAddress, SessionClient } from "@lens-protocol/client";
+import { evmAddress, Group, SessionClient, uri } from "@lens-protocol/client";
 import { Community } from "./community-service.types";
 import { handleOperationWith } from "@lens-protocol/client/viem";
 import { type WalletClient as ViemWalletClient } from "viem";
+import { group, GroupOptions } from "@lens-protocol/metadata";
+import { groveService } from "./grove-service";
 
 export type JoinValidationStatus =
   | "allowed"
@@ -187,11 +190,15 @@ const joinCommunity = async (
   if (requiresApproval) {
     result = await requestGroupMembership(sessionClient, {
       group: evmAddress(communityAddress),
-    }).andThen(handleOperationWith(walletClient));
+    })
+      .andThen(handleOperationWith(walletClient))
+      .andThen(sessionClient.waitForTransaction);
   } else {
     result = await joinGroup(sessionClient, {
       group: evmAddress(communityAddress),
-    }).andThen(handleOperationWith(walletClient));
+    })
+      .andThen(handleOperationWith(walletClient))
+      .andThen(sessionClient.waitForTransaction);
   }
 
   if (result.isErr()) {
@@ -208,6 +215,33 @@ const joinCommunity = async (
   };
 };
 
+const createCommunity = async (
+  sessionClient: SessionClient,
+  walletClient: ViemWalletClient,
+  options: GroupOptions
+): Promise<Group | null> => {
+  const metadata = group({
+    name: options.name,
+    description: options.description,
+    icon: options.icon,
+  });
+
+  const metadataUri = await groveService.uploadJson(metadata);
+
+  const result = await createGroup(sessionClient, {
+    metadataUri: uri(metadataUri),
+  })
+    .andThen(handleOperationWith(walletClient))
+    .andThen(sessionClient.waitForTransaction)
+    .andThen((txHash) => fetchGroup(sessionClient, { txHash }));
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return result.value;
+};
+
 export const communityService = {
   getUserCommunities,
   getMembersOfCommunity,
@@ -215,4 +249,5 @@ export const communityService = {
   canJoinCommunity,
   joinCommunity,
   isMemberOfCommunity,
+  createCommunity,
 };
