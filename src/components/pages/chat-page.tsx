@@ -67,7 +67,10 @@ export function ChatPage() {
           >
             <Icons.ChevronLeft />
           </Button>
-          <CommunityAvatar community={activeCommunity} />
+          <CommunityAvatar
+            name={activeCommunity.metadata?.name}
+            icon={activeCommunity.metadata?.icon}
+          />
           <h3 className="text-sm font-bold font-mono">
             {activeCommunity.metadata?.name}
           </h3>

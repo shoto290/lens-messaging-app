@@ -1,14 +1,13 @@
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import { useAccountStore } from "@/stores/account-store";
-import { groveService } from "@/services/grove-service";
 import { queryClient } from "@/app/provider";
 import { sleep } from "@/lib/utils";
 import { lensService } from "@/services/lens-service";
+import { useAvatarUpload } from "@/hooks/use-avatar-upload";
+import { useMutation } from "@tanstack/react-query";
 
 export const useLensAvatarUpload = () => {
   const { sessionClient, account: currentAccount } = useAccountStore();
-  const [isUploading, setIsUploading] = useState(false);
+  const { uploadAvatarAsync } = useAvatarUpload();
 
   const mutation = useMutation({
     mutationFn: async (file: File) => {
@@ -16,29 +15,22 @@ export const useLensAvatarUpload = () => {
         throw new Error("Not authenticated");
       }
 
-      try {
-        setIsUploading(true);
-
-        if (!currentAccount) {
-          throw new Error("No account found");
-        }
-
-        const pictureUri = await groveService.uploadImage(file);
-        console.log("Avatar uploaded to Grove:", pictureUri);
-
-        await lensService.updateAccountMetadata(sessionClient, currentAccount, {
-          picture: pictureUri,
-        });
-
-        return true;
-      } catch (error) {
-        console.error("Failed to upload avatar:", error);
-        throw error;
-      } finally {
-        setIsUploading(false);
+      if (!currentAccount) {
+        throw new Error("No account found");
       }
+
+      // Use the generic upload first
+      const pictureUri = await uploadAvatarAsync(file);
+
+      // Then update the Lens metadata with the new picture URI
+      await lensService.updateAccountMetadata(sessionClient, currentAccount, {
+        picture: pictureUri,
+      });
+
+      return pictureUri;
     },
     onSuccess: async () => {
+      // Wait for the update to process before refreshing data
       await sleep(4000);
       queryClient.invalidateQueries({ queryKey: ["account"] });
     },
@@ -48,6 +40,6 @@ export const useLensAvatarUpload = () => {
     ...mutation,
     uploadAvatar: mutation.mutate,
     uploadAvatarAsync: mutation.mutateAsync,
-    isUploading,
+    isUploading: mutation.isPending,
   };
 };

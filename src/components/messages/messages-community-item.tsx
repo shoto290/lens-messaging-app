@@ -28,7 +28,10 @@ export function MessagesCommunityItem({
       onClick={handleOpenChat}
     >
       <div className="flex items-center gap-3">
-        <CommunityAvatar community={community} />
+        <CommunityAvatar
+          name={community.metadata?.name}
+          icon={community.metadata?.icon}
+        />
         <div className="flex flex-col">
           <h3 className="text-sm font-bold font-mono">
             {community.metadata?.name}
