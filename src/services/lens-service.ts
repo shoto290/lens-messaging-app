@@ -7,6 +7,7 @@ import {
   Account,
   AccountMetadata,
   uri,
+  never,
 } from "@lens-protocol/client";
 import { AccountFragment } from "./lens-service.fragments";
 import {
@@ -14,8 +15,13 @@ import {
   currentSession,
   lastLoggedInAccount,
   setAccountMetadata,
+  createAccountWithUsername,
+  fetchAccount,
 } from "@lens-protocol/client/actions";
-import { signMessageWith } from "@lens-protocol/client/viem";
+import {
+  handleOperationWith,
+  signMessageWith,
+} from "@lens-protocol/client/viem";
 import { type WalletClient as ViemWalletClient } from "viem";
 import { account } from "@lens-protocol/metadata";
 import { groveService } from "./grove-service";
@@ -27,7 +33,6 @@ export const lensClient = PublicClient.create({
   storage: typeof window !== "undefined" ? window.localStorage : undefined,
 });
 
-// Keep track of the session client
 let sessionClientInstance: SessionClient | null = null;
 
 const getUserByAddress = async (
@@ -214,6 +219,60 @@ const getCurrentAccount = async (
   }
 };
 
+const createProfile = async (
+  owner: string,
+  walletClient: ViemWalletClient,
+  input: {
+    username: string;
+    name: string;
+    bio?: string;
+    picture?: string;
+  }
+) => {
+  const metadata = account({
+    name: input.name || undefined,
+    bio: input.bio || undefined,
+    picture: input.picture || undefined,
+  });
+
+  const metadataUri = await groveService.uploadJson(metadata);
+
+  const authenticated = await lensClient.login({
+    onboardingUser: {
+      app: evmAddress(env.NEXT_PUBLIC_LENS_APP_ID),
+      wallet: evmAddress(owner),
+    },
+    signMessage: signMessageWith(walletClient),
+  });
+
+  if (authenticated.isOk()) {
+    sessionClientInstance = authenticated.value;
+  }
+
+  if (!sessionClientInstance) {
+    throw new Error(`Failed to login to Lens`);
+  }
+
+  const result = await createAccountWithUsername(sessionClientInstance, {
+    username: { localName: input.username },
+    metadataUri: uri(metadataUri),
+  })
+    .andThen(handleOperationWith(walletClient))
+    .andThen(sessionClientInstance.waitForTransaction)
+    .andThen((txHash) => fetchAccount(sessionClientInstance!, { txHash }))
+    .andThen((account) =>
+      sessionClientInstance!.switchAccount({
+        account: account?.address ?? never("Account not found"),
+      })
+    );
+
+  if ("isErr" in result && result.isErr()) {
+    throw new Error(`Failed to create profile: ${result.error.message}`);
+  }
+
+  return result.value;
+};
+
 export const lensService = {
   getUserByAddress,
   login,
@@ -224,6 +283,7 @@ export const lensService = {
   updateAccountMetadata,
   getAvailableAccounts,
   getCurrentAccount,
+  createProfile,
   get client() {
     return lensClient;
   },

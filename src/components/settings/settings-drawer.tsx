@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Icons } from "../icons";
 import { ProfileSettingsCard } from "./profile-settings-card";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { UserAvatar } from "../user/user-avatar";
 
 export function SettingsDrawer() {
   const { account } = useAccount();
@@ -28,12 +28,10 @@ export function SettingsDrawer() {
     <Drawer>
       <DrawerTrigger asChild>
         <Button className="size-[32px]" variant="ghost" aria-label="Profile">
-          <Avatar className="rounded-full">
-            <AvatarImage src={account?.metadata?.picture} alt="Profile" />
-            <AvatarFallback>
-              {account?.metadata?.name?.substring(0, 2)}
-            </AvatarFallback>
-          </Avatar>
+          <UserAvatar
+            icon={account?.metadata?.picture ?? ""}
+            name={account?.metadata?.name ?? ""}
+          />
         </Button>
       </DrawerTrigger>
       <DrawerContent>

@@ -6,6 +6,7 @@ import { UserAvatar } from "../user/user-avatar";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { CreateProfile } from "./create-profile";
 
 interface ChooseProfileProps {
   login: (lensAccountAddress: string) => Promise<boolean>;
@@ -18,6 +19,7 @@ export function ChooseProfile({
   isPending,
   disconnect,
 }: ChooseProfileProps) {
+  const [wantToCreateAccount, setWantToCreateAccount] = useState(false);
   const { data: accounts, isLoading } = useLensAccounts();
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
 
@@ -44,6 +46,10 @@ export function ChooseProfile({
     );
   }
 
+  if (wantToCreateAccount) {
+    return <CreateProfile setWantToCreateAccount={setWantToCreateAccount} />;
+  }
+
   return (
     <div className="w-full flex flex-col gap-2">
       {accounts && accounts.length > 0 ? (
@@ -62,7 +68,11 @@ export function ChooseProfile({
               >
                 <div className="flex items-center gap-5 w-full">
                   <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <UserAvatar className="size-12" account={account} />
+                    <UserAvatar
+                      className="size-12"
+                      icon={account.metadata?.picture}
+                      name={account.metadata?.name}
+                    />
                   </div>
                   <div className="flex-1 text-left space-y-1">
                     <p className="font-bold font-mono">
@@ -79,7 +89,20 @@ export function ChooseProfile({
                   </div>
                 )}
               </Button>
-            ))}
+            ))}{" "}
+            <Button
+              variant="outline"
+              className={cn(
+                "relative w-full justify-start gap-2 py-3.5  px-4 h-18"
+              )}
+              disabled={isPending}
+              onClick={() => setWantToCreateAccount(true)}
+            >
+              <div className="flex items-center gap-5 w-full">
+                <Icons.Plus />
+                <p className="font-bold font-mono">Create a new profile</p>
+              </div>
+            </Button>
           </div>
           <Button
             size="rounded"
