@@ -89,15 +89,13 @@ export const useCommunityCreateStore = create<CommunityCreateStore>(
     validateForm: () => {
       const { communityInfo, currentStep } = get();
 
-      if (currentStep === 1) {
-        const isStep1Valid =
-          communityInfo.name.trim().length > 0 &&
-          communityInfo.description.trim().length > 0;
+      if (currentStep === CommunityCreateStep.STEP_1) {
+        const isStep1Valid = communityInfo.name.trim().length > 0;
         set({ isValid: isStep1Valid });
         return isStep1Valid;
       }
 
-      if (currentStep === 2) {
+      if (currentStep === CommunityCreateStep.STEP_2) {
         set({ isValid: true });
         return true;
       }

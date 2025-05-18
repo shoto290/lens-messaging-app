@@ -24,6 +24,10 @@ export function CommunityCreateForm() {
     }
   };
 
+  console.log({
+    isValid,
+  });
+
   return (
     <div className="w-full h-full flex flex-col justify-between flex-1">
       <CommunityCreateStepper />

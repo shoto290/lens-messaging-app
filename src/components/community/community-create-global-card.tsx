@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { forwardRef, useRef } from "react";
+import { forwardRef, useRef, useState, useEffect } from "react";
 
 import {
   Form,
@@ -14,21 +14,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useCommunityAvatarUpload } from "@/hooks/community/use-community-avatar-upload";
 import { useCommunityCreateStore } from "@/stores/community-create-store";
+import { groveService } from "@/services/grove-service";
+import { CommunityAvatar } from "./community-avatar";
 
 const communityCreateFormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  description: z.string(),
-  avatar: z.string().optional(),
+  name: z.string(),
+  description: z.string().optional(),
 });
 
 type CommunityCreateFormValues = z.infer<typeof communityCreateFormSchema>;
@@ -48,9 +45,8 @@ export const CommunityCreateGlobalCard = forwardRef<
   CommunityCreateGlobalCardProps
 >(({ avatarSrc, name, bio }) => {
   const { updateCommunityInfo } = useCommunityCreateStore();
-  const { uploadAvatar, isUploading: isUploadingAvatar } =
-    useCommunityAvatarUpload();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
   const defaultValues: Partial<CommunityCreateFormValues> = {
     name: name,
@@ -60,14 +56,25 @@ export const CommunityCreateGlobalCard = forwardRef<
   const form = useForm<CommunityCreateFormValues>({
     resolver: zodResolver(communityCreateFormSchema),
     defaultValues,
+    mode: "onChange",
   });
+
+  // Auto-submit form when values change
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name && form.formState.isValid) {
+        onSubmit(form.getValues());
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form.watch]);
 
   function onSubmit(data: CommunityCreateFormValues) {
     try {
       updateCommunityInfo({
         name: data.name,
         description: data.description,
-        avatar: data.avatar,
       });
     } catch (error) {
       console.error("Error submitting profile data:", error);
@@ -75,10 +82,21 @@ export const CommunityCreateGlobalCard = forwardRef<
     }
   }
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
-      uploadAvatar(file);
+      setIsUploadingAvatar(true);
+      try {
+        const pictureUri = await groveService.uploadImage(file);
+        updateCommunityInfo({ avatar: pictureUri });
+      } catch (error) {
+        console.error("Error uploading avatar:", error);
+        toast.error("Error uploading avatar");
+      } finally {
+        setIsUploadingAvatar(false);
+      }
     }
   };
 
@@ -89,10 +107,11 @@ export const CommunityCreateGlobalCard = forwardRef<
       </CardHeader>
       <CardContent>
         <div className="flex justify-between items-center">
-          <Avatar className="h-16 w-16">
-            <AvatarImage src={avatarSrc} />
-            <AvatarFallback>{name.substring(0, 2)}</AvatarFallback>
-          </Avatar>
+          <CommunityAvatar
+            className="size-16"
+            name={name}
+            icon={avatarSrc ?? ""}
+          />
           <div className="mt-2 flex gap-2">
             <input
               type="file"
@@ -116,10 +135,7 @@ export const CommunityCreateGlobalCard = forwardRef<
           </div>
         </div>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="mt-4 space-y-4"
-          >
+          <form className="mt-4 space-y-4">
             <FormField
               control={form.control}
               name="name"
