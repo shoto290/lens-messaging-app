@@ -19,18 +19,14 @@ export const useLensProfileUpdateMetadata = () => {
       }
 
       try {
-        if (!currentAccount?.account) {
+        if (!currentAccount) {
           throw new Error("No account found");
         }
 
-        await lensService.updateAccountMetadata(
-          sessionClient,
-          currentAccount?.account,
-          {
-            name: name || undefined,
-            bio: bio || undefined,
-          }
-        );
+        await lensService.updateAccountMetadata(sessionClient, currentAccount, {
+          name: name || undefined,
+          bio: bio || undefined,
+        });
 
         return true;
       } catch (error) {

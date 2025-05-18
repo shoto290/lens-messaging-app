@@ -16,9 +16,9 @@ export function useIsCommunityMember(communityAddress: string) {
 
       const isMember = await communityService.isMemberOfCommunity(
         communityAddress,
-        account.account.username?.localName || "",
-        account.account.username?.namespace || "",
-        account.account.address
+        account.username?.localName || "",
+        account.username?.namespace || "",
+        account.address
       );
       return isMember;
     },

@@ -19,20 +19,16 @@ export const useLensAvatarUpload = () => {
       try {
         setIsUploading(true);
 
-        if (!currentAccount?.account) {
+        if (!currentAccount) {
           throw new Error("No account found");
         }
 
         const pictureUri = await groveService.uploadImage(file);
         console.log("Avatar uploaded to Grove:", pictureUri);
 
-        await lensService.updateAccountMetadata(
-          sessionClient,
-          currentAccount?.account,
-          {
-            picture: pictureUri,
-          }
-        );
+        await lensService.updateAccountMetadata(sessionClient, currentAccount, {
+          picture: pictureUri,
+        });
 
         return true;
       } catch (error) {

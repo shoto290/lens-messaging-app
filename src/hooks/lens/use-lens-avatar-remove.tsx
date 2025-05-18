@@ -18,17 +18,13 @@ export const useLensAvatarRemove = () => {
       try {
         setIsUploading(true);
 
-        if (!currentAccount?.account) {
+        if (!currentAccount) {
           throw new Error("No account found");
         }
 
-        await lensService.updateAccountMetadata(
-          sessionClient,
-          currentAccount?.account,
-          {
-            picture: undefined,
-          }
-        );
+        await lensService.updateAccountMetadata(sessionClient, currentAccount, {
+          picture: undefined,
+        });
 
         return true;
       } catch (error) {
