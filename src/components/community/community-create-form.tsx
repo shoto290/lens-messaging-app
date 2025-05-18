@@ -3,12 +3,12 @@ import {
   useCommunityCreateStore,
   CommunityCreateStep,
 } from "@/stores/community-create-store";
-import { CommunityCreateStep1 } from "./community-create-step-1";
-import { CommunityCreateStep2 } from "./community-create-step-2";
+import { CommunityCreateResumeStep } from "./community-create-resume-step";
 import { CommunityCreateStepper } from "./community-create-stepper";
 import { BottomActionBar } from "./bottom-action-bar";
 import { useCreateCommunity } from "@/hooks/community/use-create-community";
 import { toast } from "sonner";
+import { CommunityCreateGlobalCard } from "./community-create-global-card";
 
 export function CommunityCreateForm() {
   const {
@@ -29,11 +29,11 @@ export function CommunityCreateForm() {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <CommunityCreateStep1 />;
+        return <CommunityCreateGlobalCard />;
       case 2:
-        return <CommunityCreateStep2 />;
+        return <CommunityCreateResumeStep />;
       default:
-        return <CommunityCreateStep1 />;
+        return <CommunityCreateGlobalCard />;
     }
   };
 

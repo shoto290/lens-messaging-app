@@ -1,0 +1,32 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Web3 & Lens Protocol Integration
+
+This application integrates with the Lens Protocol for decentralized social networking features and uses various Web3 libraries.
+
+## Authentication Flow
+
+- Lens authentication is handled via the [use-lens-authentication.tsx](mdc:src/hooks/lens/use-lens-authentication.tsx) hook
+- Wallet connection is managed using ConnectKit and Wagmi
+- Session management is persisted through the Account Store
+
+## Key Hooks
+
+- [use-lens-accounts.ts](mdc:src/hooks/lens/use-lens-accounts.ts) - Lens account management
+- [use-lens-authentication.tsx](mdc:src/hooks/lens/use-lens-authentication.tsx) - Login and session handling
+- [use-lens-avatar-upload.tsx](mdc:src/hooks/lens/use-lens-avatar-upload.tsx) - Profile image uploads
+- [use-lens-profile-update-metadata.tsx](mdc:src/hooks/lens/use-lens-profile-update-metadata.tsx) - Profile updates
+
+## State Management
+
+- Account state is managed in [stores/account-store.ts](mdc:src/stores/account-store.ts)
+- Authentication state is persisted across sessions
+- React Query is used for remote data fetching and caching
+
+## Services
+
+- Lens Service handles API interactions with the Lens Protocol
+- Storage services manage decentralized content storage

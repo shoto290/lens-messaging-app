@@ -1,0 +1,44 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Code Patterns and Conventions
+
+This project follows established patterns and conventions. Follow these guidelines when working with the codebase.
+
+## Component Structure
+
+- Components are organized by feature area (messages, chat, profile, etc.)
+- UI components use Radix primitives with custom styling
+- Example: [src/components/ui/button.tsx](mdc:src/components/ui/button.tsx)
+
+## Hooks Pattern
+
+- Custom hooks are organized by feature area 
+- Lens-specific hooks are in [src/hooks/lens/](mdc:src/hooks/lens)
+- Hooks follow the `use-` naming convention
+- Example: [src/hooks/lens/use-lens-authentication.tsx](mdc:src/hooks/lens/use-lens-authentication.tsx)
+
+## State Management
+
+- Zustand is used for global state management
+- Store files are located in [src/stores/](mdc:src/stores)
+
+## Styling
+
+- TailwindCSS is used for styling with utility classes
+- CSS variables are defined in [src/app/globals.css](mdc:src/app/globals.css)
+- UI consistency is maintained through component composition
+- `tailwind-merge` is used to conditionally merge classes: [src/lib/utils.ts](mdc:src/lib/utils.ts)
+
+## Form Handling
+
+- `react-hook-form` with Zod validation is used for forms
+- Examples in [src/components/ui/form.tsx](mdc:src/components/ui/form.tsx)
+
+## Next.js App Router 
+
+- Uses parallel routing with slots (@app and @login)
+- Root layout defined in [src/app/layout.tsx](mdc:src/app/layout.tsx)
+- Provider wrapping in [src/app/provider.tsx](mdc:src/app/provider.tsx)

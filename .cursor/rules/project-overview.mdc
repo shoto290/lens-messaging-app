@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Project Overview
+
+This is a Next.js-based messaging application built on the Lens Protocol. The app allows users to connect, message, and interact in a decentralized social network.
+
+## Key Technologies
+
+- **Next.js 15** - React framework with App Router
+- **React 19** - UI library
+- **Lens Protocol** - Decentralized social graph
+- **TailwindCSS** - Utility-first CSS framework
+- **Radix UI** - Unstyled, accessible components
+- **Zustand** - State management
+- **React Query** - Data fetching and caching
+- **Wagmi/Viem** - Ethereum interactions
+- **ConnectKit** - Wallet connection
+
+## Main Entry Points
+
+- App entry: [src/app/layout.tsx](mdc:src/app/layout.tsx)
+- Main page: [src/app/(root)/@app/page.tsx](mdc:src/app/(root)/@app/page.tsx)
+- Login page: [src/app/(root)/@login/page.tsx](mdc:src/app/(root)/@login/page.tsx)
+
+## Environment Setup
+
+The app uses environment variables defined in [src/env.ts](mdc:src/env.ts).

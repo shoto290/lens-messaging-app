@@ -4,7 +4,7 @@ import { DiscoverMembersCountBadge } from "../discover/discover-members-count-ba
 import { Card, CardHeader, CardTitle } from "../ui/card";
 import { CardContent } from "../ui/card";
 
-export function CommunityCreateStep2() {
+export function CommunityCreateResumeStep() {
   const { communityInfo } = useCommunityCreateStore();
 
   return (

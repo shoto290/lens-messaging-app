@@ -1,32 +1,44 @@
 ---
-description:
-globs:
+description: 
+globs: 
 alwaysApply: false
 ---
 # Project Structure
 
-This is a Next.js 15 application with App Router using React 19 and TypeScript.
+The codebase follows Next.js App Router conventions with a modular organization pattern.
 
 ## Key Directories
 
-- [src/app](mdc:src/app): Contains the App Router pages and layouts
-- [src/components](mdc:src/components): Reusable UI components
-- [src/hooks](mdc:src/hooks): Custom React hooks for data fetching and state
-- [src/lib](mdc:src/lib): Utility functions and constants
-- [src/services](mdc:src/services): API service definitions
-- [src/stores](mdc:src/stores): Zustand state stores
+- **src/app/** - Next.js App Router pages and layouts
+  - **(root)/** - Main app routes with parallel routing (@app and @login)
+  - **api/** - API routes and serverless functions
 
-## Main Entry Points
+- **src/components/** - Reusable React components
+  - **ui/** - Low-level UI components (buttons, inputs, etc.)
+  - **chat/** - Chat and messaging components
+  - **messages/** - Message display and composition
+  - **community/** - Community and group features
+  - **profile/** - User profile components
+  - **user/** - User-related components
+  - **settings/** - Settings interface components
+  - **discover/** - Discovery and search components
+  - **navbar/** - Navigation components
 
-- [src/app/layout.tsx](mdc:src/app/layout.tsx): Root layout with providers
-- [src/app/(root)/layout.tsx](mdc:src/app/(root)/layout.tsx): Main application layout
-- [src/app/provider.tsx](mdc:src/app/provider.tsx): React context providers
+- **src/hooks/** - Custom React hooks
+  - **lens/** - Lens Protocol specific hooks
+  - **chat/** - Chat functionality hooks
+  - **community/** - Community-related hooks
 
-## Tech Stack
+- **src/lib/** - Utilities and shared code
+  - **constants/** - App constants and configuration
+  - **types/** - TypeScript type definitions
 
-- **Framework**: Next.js 15 with App Router
-- **UI**: Custom components built on Radix UI primitives with Tailwind CSS
-- **State Management**: Zustand for global state
-- **Data Fetching**: React Query with custom hooks
-- **Form Handling**: React Hook Form with Zod validation
-- **Styling**: Tailwind CSS with class-variance-authority
+- **src/services/** - External service integrations
+
+- **src/stores/** - State management with Zustand
+
+## Configuration Files
+
+- [next.config.ts](mdc:next.config.ts) - Next.js configuration
+- [tailwind.config.js](mdc:tailwind.config.js) - TailwindCSS configuration
+- [components.json](mdc:components.json) - UI component configuration
