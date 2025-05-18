@@ -7,9 +7,9 @@ export function useUserCommunities() {
   const { account } = useAccount();
 
   const query = useQuery({
-    queryKey: ["user-communities", account?.account.address],
-    queryFn: () => fetchUserCommunities(account?.account.address || ""),
-    enabled: !!account?.account.address,
+    queryKey: ["user-communities", account?.address],
+    queryFn: () => fetchUserCommunities(account?.address || ""),
+    enabled: !!account?.address,
   });
 
   return {

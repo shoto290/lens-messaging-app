@@ -4,6 +4,7 @@ import { useAccountStore } from "@/stores/account-store";
 import { useAccount, useWalletClient } from "wagmi";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/app/provider";
+import { sleep } from "@/lib/utils";
 
 export const useLensAuthentication = () => {
   const { initialized, initialize, sessionClient, setSessionClient } =
@@ -34,7 +35,7 @@ export const useLensAuthentication = () => {
   }, [initialize, initialized, setSessionClient, address, isConnected]);
 
   const loginWithAccount = useCallback(
-    async (lensAccountAddress?: string) => {
+    async (lensAccountAddress: string) => {
       try {
         if (!address || !walletClient) {
           console.error("Wallet not connected or client not available");
@@ -57,9 +58,11 @@ export const useLensAuthentication = () => {
     [initialize, setSessionClient, address, walletClient]
   );
 
-  const mutation = useMutation<boolean, Error, string | undefined>({
+  const mutation = useMutation<boolean, Error, string>({
     mutationFn: loginWithAccount,
-    onSuccess: () => {
+    onSuccess: async () => {
+      await sleep(1000);
+
       queryClient.invalidateQueries({ queryKey: ["account"] });
     },
   });

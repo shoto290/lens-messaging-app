@@ -14,47 +14,48 @@ export function ConnectNavbar() {
   const { isAuthenticated, loginAsync, isPending } = useLensAuthentication();
   const { disconnect } = useDisconnect();
 
-  // This function handles login with an optional lens account address
-  const handleLogin = (lensAccountAddress?: string) => {
+  const handleLogin = (lensAccountAddress: string): Promise<boolean> => {
     return loginAsync(lensAccountAddress);
   };
 
   return (
-    <Navbar className="bg-background">
-      <ConnectKitButton.Custom>
-        {({ show, isConnecting }) =>
-          !isConnected ? (
-            <Button
-              className="w-full"
-              onClick={show}
-              disabled={isConnecting || isConnected || isPending}
-            >
-              {!isConnecting ? (
-                <>
-                  Connect Wallet
-                  <Icons.ArrowRight className="size-4" />
-                </>
-              ) : (
-                <>
-                  Connect Wallet
-                  <Icons.Loader className="size-4 animate-spin " />
-                </>
-              )}
-            </Button>
-          ) : isConnected && !isAuthenticated ? (
-            <ChooseProfile
-              login={handleLogin}
-              isPending={isPending}
-              disconnect={disconnect}
-            />
-          ) : (
-            <Button className="w-full" onClick={show}>
-              Loading...
-              <Icons.Loader className="size-4 animate-spin" />
-            </Button>
-          )
-        }
-      </ConnectKitButton.Custom>
-    </Navbar>
+    <div className="p-3 w-full">
+      <Navbar className="bg-card rounded-3xl p-3">
+        <ConnectKitButton.Custom>
+          {({ show, isConnecting }) =>
+            !isConnected ? (
+              <Button
+                className="w-full"
+                onClick={show}
+                disabled={isConnecting || isConnected || isPending}
+              >
+                {!isConnecting ? (
+                  <>
+                    Connect Wallet
+                    <Icons.ArrowRight className="size-4" />
+                  </>
+                ) : (
+                  <>
+                    Connect Wallet
+                    <Icons.Loader className="size-4 animate-spin " />
+                  </>
+                )}
+              </Button>
+            ) : isConnected && !isAuthenticated ? (
+              <ChooseProfile
+                login={handleLogin}
+                isPending={isPending}
+                disconnect={disconnect}
+              />
+            ) : (
+              <Button className="w-full" onClick={show}>
+                Loading...
+                <Icons.Loader className="size-4 animate-spin" />
+              </Button>
+            )
+          }
+        </ConnectKitButton.Custom>
+      </Navbar>
+    </div>
   );
 }

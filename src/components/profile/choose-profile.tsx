@@ -45,25 +45,27 @@ export function ChooseProfile({
   }
 
   return (
-    <div className="w-full flex flex-col gap-4">
+    <div className="w-full flex flex-col gap-2">
       {accounts && accounts.length > 0 ? (
         <>
-          <h2 className="text-lg font-medium">Select a Lens account</h2>
+          <h2 className="font-medium font-mono pl-1">Select a Lens account</h2>
           <div className="flex flex-col gap-2 max-h-60 overflow-y-auto">
             {accounts.map(({ account }: AccountAvailable) => (
               <Button
                 key={account.address}
                 variant="outline"
-                className={cn("relative w-full justify-start gap-2 py-6")}
+                className={cn(
+                  "relative w-full justify-start gap-2 py-3.5  px-4 h-fit"
+                )}
                 onClick={() => handleLogin(account.address)}
                 disabled={isPending}
               >
-                <div className="flex items-center gap-3 w-full">
+                <div className="flex items-center gap-5 w-full">
                   <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <UserAvatar account={account} />
+                    <UserAvatar className="size-12" account={account} />
                   </div>
-                  <div className="flex-1 text-left">
-                    <p className="font-medium">
+                  <div className="flex-1 text-left space-y-1">
+                    <p className="font-bold font-mono">
                       {account.metadata?.name || "Unnamed Profile"}
                     </p>
                     <p className="text-xs text-muted-foreground truncate">

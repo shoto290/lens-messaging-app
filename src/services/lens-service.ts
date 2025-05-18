@@ -69,37 +69,15 @@ const getLastLoggedInAccount = async (address: string) => {
 const login = async (
   address: string,
   walletClient: ViemWalletClient,
-  lensAccountAddress?: string
+  lensAccountAddress: string
 ): Promise<SessionClient | null> => {
   try {
-    let accountToLogin: AccountAvailable | null = null;
-
-    if (lensAccountAddress) {
-      // If a specific Lens account address is provided, find it among available accounts
-      const accounts = await getAvailableAccounts(address);
-      accountToLogin =
-        accounts.find((acc) => acc.account.address === lensAccountAddress) ||
-        null;
-    } else {
-      // Fallback to getting the first available account
-      accountToLogin = await getUserByAddress(address);
-    }
-
     const authenticated = await lensClient.login({
-      ...(accountToLogin
-        ? {
-            accountOwner: {
-              owner: evmAddress(address),
-              account: evmAddress(accountToLogin.account.address),
-              app: evmAddress(env.NEXT_PUBLIC_LENS_APP_ID),
-            },
-          }
-        : {
-            onboardingUser: {
-              wallet: evmAddress(address),
-              app: evmAddress(env.NEXT_PUBLIC_LENS_APP_ID),
-            },
-          }),
+      accountOwner: {
+        owner: evmAddress(address),
+        account: evmAddress(lensAccountAddress),
+        app: evmAddress(env.NEXT_PUBLIC_LENS_APP_ID),
+      },
       signMessage: signMessageWith(walletClient),
     });
 
@@ -118,8 +96,7 @@ const login = async (
 
 const logout = async (): Promise<boolean> => {
   try {
-    // @ts-expect-error The lensClient has a logout method but it's not in the TypeScript type definitions
-    const result = await lensClient.logout();
+    const result = await sessionClientInstance?.logout();
     if (result && typeof result.isOk === "function" && result.isOk()) {
       sessionClientInstance = null;
       return true;
@@ -211,6 +188,32 @@ const getAvailableAccounts = async (
   }
 };
 
+const getCurrentAccount = async (
+  sessionClient: SessionClient
+): Promise<Account | null> => {
+  try {
+    const session = await currentSession(sessionClient);
+
+    if (session.isOk()) {
+      const address = session.value.signer;
+
+      const accounts = await lastLoggedInAccount(lensClient, {
+        address: evmAddress(address),
+        app: evmAddress(env.NEXT_PUBLIC_LENS_APP_ID),
+      });
+
+      if (accounts.isOk()) {
+        return accounts.value as Account;
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Failed to get current account:", error);
+    return null;
+  }
+};
+
 export const lensService = {
   getUserByAddress,
   login,
@@ -220,6 +223,7 @@ export const lensService = {
   getLastLoggedInAccount,
   updateAccountMetadata,
   getAvailableAccounts,
+  getCurrentAccount,
   get client() {
     return lensClient;
   },

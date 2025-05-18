@@ -6,7 +6,7 @@ import { AccountAvailable } from "@lens-protocol/client";
 export function useLensAccounts() {
   const { address, isConnected } = useAccount();
 
-  return useQuery<AccountAvailable[], Error>({
+  const query = useQuery<AccountAvailable[], Error>({
     queryKey: ["lens-accounts", address],
     queryFn: async () => {
       if (!address) {
@@ -17,4 +17,8 @@ export function useLensAccounts() {
     },
     enabled: !!address && isConnected,
   });
+
+  return {
+    ...query,
+  };
 }
