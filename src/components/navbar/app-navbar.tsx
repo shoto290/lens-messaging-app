@@ -23,8 +23,7 @@ export function AppNavbar() {
                 "size-[32px]",
                 "relative",
                 "group",
-                "transition-colors",
-                active && "bg-accent"
+                "transition-colors"
               )}
               variant="ghost"
               aria-label={item.label}

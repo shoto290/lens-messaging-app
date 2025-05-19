@@ -9,12 +9,11 @@ import { useNavigation } from "@/stores/navigation-store";
 import { Section } from "@/lib/types/navigation";
 import { CommunityAvatar } from "../community/community-avatar";
 import { useChatMessages } from "@/hooks/chat/use-chat-messages";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useSendMessages } from "@/hooks/chat/use-send-messages";
 import { Skeleton } from "../ui/skeleton";
 import { formatTime } from "@/lib/utils";
 import { useAccount } from "@/hooks/use-account";
-import { groveService } from "@/services/grove-service";
+import { UserAvatar } from "../user/user-avatar";
 
 export function ChatPage() {
   const [messageText, setMessageText] = useState("");
@@ -78,7 +77,7 @@ export function ChatPage() {
       </div>
 
       <div
-        className="flex-grow overflow-y-auto p-4 flex flex-col gap-4"
+        className="flex-grow overflow-y-auto p-4 flex flex-col gap-4 pb-24"
         ref={messagesContainerRef}
       >
         {isPending
@@ -102,22 +101,6 @@ export function ChatPage() {
                   key={message.id}
                   className={`flex gap-3 ${isMe ? "flex-row-reverse" : ""}`}
                 >
-                  {!isMe && (
-                    <Avatar className="h-10 w-10 rounded-full">
-                      <AvatarImage
-                        src={groveService.resolveImage(
-                          message.author.metadata?.picture
-                        )}
-                        alt={message.author.metadata?.name || "No name"}
-                      />
-                      <AvatarFallback>
-                        {message.author.metadata?.name
-                          ?.substring(0, 2)
-                          .toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
-
                   <div
                     className={`flex flex-col max-w-[80%] ${
                       isMe ? "items-end" : ""
@@ -128,6 +111,13 @@ export function ChatPage() {
                         isMe ? "flex-row-reverse" : ""
                       }`}
                     >
+                      {
+                        <UserAvatar
+                          className="size-5"
+                          name={message.author.metadata?.name}
+                          icon={message.author.metadata?.picture}
+                        />
+                      }
                       <span className="font-semibold">
                         {isMe ? "You" : message.author.metadata?.name}
                       </span>
@@ -137,10 +127,10 @@ export function ChatPage() {
                     </div>
 
                     <div
-                      className={`p-3 rounded-lg ${
+                      className={`px-4 py-3 rounded-lg overflow-hidden w-fit ${
                         isMe
-                          ? "bg-primary text-primary-foreground rounded-tr-none"
-                          : "bg-muted rounded-tl-none"
+                          ? "bg-primary text-primary-foreground "
+                          : "bg-muted "
                       }`}
                     >
                       {(message as any).metadata?.content}
@@ -151,16 +141,16 @@ export function ChatPage() {
             })}
       </div>
 
-      <div className="border-t border-border p-4 flex gap-2">
+      <div className="absolute bottom-0 left-0 right-0 p-4 flex gap-2 backdrop-blur-lg rounded-t-[30px] overflow-hidden bg-background/50">
         <input
           type="text"
-          className="flex-grow px-4 py-2 rounded-md bg-background border border-border"
+          className="flex-grow px-4 py-2 rounded-md bg-accent border border-border"
           placeholder="Type a message..."
           value={messageText}
           onChange={(e) => setMessageText(e.target.value)}
           onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
         />
-        <Button onClick={handleSendMessage}>
+        <Button variant="default" onClick={handleSendMessage}>
           <Icons.Send />
         </Button>
       </div>

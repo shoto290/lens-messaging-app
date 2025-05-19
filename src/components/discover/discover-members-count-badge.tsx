@@ -9,7 +9,7 @@ export function DiscoverMembersCountBadge({
   count,
 }: DiscoverMembersCountBadgeProps) {
   return (
-    <Badge variant={"outline"}>
+    <Badge variant={"secondary"}>
       <Icons.Users className="size-4" />
       {count}
     </Badge>

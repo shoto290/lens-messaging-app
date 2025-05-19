@@ -181,7 +181,6 @@ export const ProfileSettingsCard = forwardRef<
                   <div className="relative">
                     <FormControl>
                       <Textarea
-                        placeholder="Tell us about yourself"
                         {...field}
                         onBlur={() => handleBlur()}
                         disabled={isPending}

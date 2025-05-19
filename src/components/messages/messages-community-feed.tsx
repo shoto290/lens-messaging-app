@@ -39,7 +39,7 @@ export function MessagesCommunityFeed() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col px-2 gap-2">
       {userCommunities.map((community) => (
         <MessagesCommunityItem key={community.address} community={community} />
       ))}

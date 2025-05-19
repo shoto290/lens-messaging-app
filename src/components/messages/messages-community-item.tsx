@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "../ui/badge";
 import { useChatStore } from "@/stores/chat-store";
 import { useNavigation } from "@/stores/navigation-store";
 import { Section } from "@/lib/types/navigation";
@@ -24,7 +23,7 @@ export function MessagesCommunityItem({
 
   return (
     <div
-      className="w-full border-b border-border flex flex-row justify-between items-center p-[16px] hover:bg-accent/50 transition-colors cursor-pointer"
+      className="w-full rounded-lg border-y border-border bg-muted/10 flex flex-row justify-between items-center p-[16px] hover:bg-accent/50 transition-colors cursor-pointer"
       onClick={handleOpenChat}
     >
       <div className="flex items-center gap-3">
@@ -42,7 +41,7 @@ export function MessagesCommunityItem({
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <Badge>{12}</Badge>
+        {/* <div className="size-2 rounded-full bg-primary animate-ping" /> */}
       </div>
     </div>
   );

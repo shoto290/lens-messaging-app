@@ -193,7 +193,6 @@ export function CreateProfile({ setWantToCreateAccount }: CreateProfileProps) {
                     <div className="relative">
                       <FormControl>
                         <Textarea
-                          placeholder="Tell us about yourself"
                           {...field}
                           disabled={isUploadingAvatar}
                           className="resize-none max-h-20"

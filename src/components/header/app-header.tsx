@@ -6,10 +6,10 @@ export function AppHeader() {
   const { activeSection } = useNavigation();
 
   return (
-    <div className="border-border border-b p-[12px] pt-[16px] flex justify-between items-center">
-      {activeSection}
+    <div className="rounded-b-[30px] p-[12px] py-[16px] flex justify-between items-center">
+      <p className="pl-3 text-base font-medium font-mono">{activeSection}</p>
       <div className="space-x-2">
-        <Button variant="outline" size="icon">
+        <Button variant="secondary" size="icon">
           <Icons.Bell />
         </Button>
       </div>
