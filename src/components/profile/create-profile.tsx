@@ -21,6 +21,12 @@ import { UserAvatar } from "../user/user-avatar";
 import { Icons } from "../icons";
 import { useAccountCreateStore } from "@/stores/account-create-store";
 import { useCreateAccount } from "@/hooks/account/use-create-account";
+import {
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "../ui/drawer";
 
 const communityCreateFormSchema = z.object({
   username: z.string(),
@@ -100,156 +106,155 @@ export function CreateProfile({
   };
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <Card className="relative w-full">
-        <CardHeader>
-          <CardTitle className="text-lg font-medium">
-            Create a new profile
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-between items-center">
-            <UserAvatar
-              className="size-16"
-              name={accountInfo.name}
-              icon={accountInfo.picture ?? ""}
-            />
-            <div className="mt-2 flex gap-2">
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                accept="image/*"
-                className="hidden"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="rounded"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isUploadingAvatar}
-              >
-                {isUploadingAvatar ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                ) : null}
-                Edit photo
-              </Button>
-            </div>
-          </div>
-          <Form {...form}>
-            <form className="mt-4 space-y-4">
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <div className="relative">
-                      <FormControl>
-                        <Input
-                          className="pl-8"
-                          placeholder="username"
-                          {...field}
-                          disabled={isUploadingAvatar}
-                        />
-                      </FormControl>
-                      {isUploadingAvatar && (
-                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                        </div>
-                      )}
-                      <div className="absolute left-3 top-0 bottom-0 flex items-center justify-center">
-                        <p>@</p>
-                      </div>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Display name</FormLabel>
-                    <div className="relative">
-                      <FormControl>
-                        <Input
-                          placeholder="Your name"
-                          {...field}
-                          disabled={isUploadingAvatar}
-                        />
-                      </FormControl>
-                      {isUploadingAvatar && (
-                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                        </div>
-                      )}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <div className="relative">
-                      <FormControl>
-                        <Textarea
-                          {...field}
-                          disabled={isUploadingAvatar}
-                          className="resize-none max-h-20"
-                        />
-                      </FormControl>
-                      {isUploadingAvatar && (
-                        <div className="absolute right-3 top-3">
-                          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                        </div>
-                      )}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-      <div className="w-full flex gap-2 items-center">
-        <Button
-          onClick={() => {
-            if (newUser) {
-              disconnect();
-            } else {
-              setWantToCreateAccount(false);
-            }
-          }}
-          className="rounded-full"
-          size="icon"
-          variant="outline"
-        >
-          <Icons.ArrowLeft />
-        </Button>
-        <Button
-          onClick={() => createAccount()}
-          className="flex-1"
-          size="rounded"
-          variant="secondary"
-          disabled={isPending}
-        >
-          {isPending ? (
-            <>
-              <Icons.Loader className="size-4 animate-spin" />
-              Waiting for signature
-            </>
-          ) : (
-            "Create"
-          )}
-        </Button>
+    <div className="flex flex-col gap-2 w-full px-2">
+      <DrawerHeader>
+        <DrawerTitle>Create a new profile</DrawerTitle>
+        <DrawerDescription>
+          This will be your identity across the Lens ecosystem.
+        </DrawerDescription>
+      </DrawerHeader>
+      <div className="flex justify-between items-center">
+        <UserAvatar
+          className="size-16"
+          name={accountInfo.name}
+          icon={accountInfo.picture ?? ""}
+        />
+        <div className="mt-2 flex gap-2">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*"
+            className="hidden"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="rounded"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploadingAvatar}
+          >
+            {isUploadingAvatar ? (
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            ) : null}
+            Edit photo
+          </Button>
+        </div>
       </div>
+      <Form {...form}>
+        <form className="mt-4 space-y-4">
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <div className="relative">
+                  <FormControl>
+                    <Input
+                      className="pl-8"
+                      placeholder="username"
+                      {...field}
+                      disabled={isUploadingAvatar}
+                    />
+                  </FormControl>
+                  {isUploadingAvatar && (
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                    </div>
+                  )}
+                  <div className="absolute left-3 top-0 bottom-0 flex items-center justify-center">
+                    <p>@</p>
+                  </div>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Display name</FormLabel>
+                <div className="relative">
+                  <FormControl>
+                    <Input
+                      placeholder="Your name"
+                      {...field}
+                      disabled={isUploadingAvatar}
+                    />
+                  </FormControl>
+                  {isUploadingAvatar && (
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                    </div>
+                  )}
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <div className="relative">
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      disabled={isUploadingAvatar}
+                      className="resize-none max-h-20"
+                    />
+                  </FormControl>
+                  {isUploadingAvatar && (
+                    <div className="absolute right-3 top-3">
+                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                    </div>
+                  )}
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
+      <DrawerFooter className="px-0">
+        <div className="w-full flex gap-2 items-center">
+          <Button
+            onClick={() => {
+              if (newUser) {
+                disconnect();
+              } else {
+                setWantToCreateAccount(false);
+              }
+            }}
+            className="rounded-full"
+            size="icon"
+            variant="outline"
+          >
+            <Icons.ArrowLeft />
+          </Button>
+          <Button
+            onClick={() => createAccount()}
+            className="flex-1"
+            size="rounded"
+            variant="secondary"
+            disabled={isPending}
+          >
+            {isPending ? (
+              <>
+                <Icons.Loader className="size-4 animate-spin" />
+                Waiting for signature
+              </>
+            ) : (
+              "Create"
+            )}
+          </Button>
+        </div>
+      </DrawerFooter>
     </div>
   );
 }

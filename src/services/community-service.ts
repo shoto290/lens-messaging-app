@@ -8,7 +8,13 @@ import {
   leaveGroup,
 } from "@lens-protocol/client/actions";
 import { lensClient } from "./lens-service";
-import { evmAddress, Group, SessionClient, uri } from "@lens-protocol/client";
+import {
+  evmAddress,
+  Group,
+  GroupsOrderBy,
+  SessionClient,
+  uri,
+} from "@lens-protocol/client";
 import { Community } from "./community-service.types";
 import { handleOperationWith } from "@lens-protocol/client/viem";
 import { type WalletClient as ViemWalletClient } from "viem";
@@ -30,6 +36,7 @@ const getUserCommunities = async (address: string): Promise<Community[]> => {
     filter: {
       member: evmAddress(address),
     },
+    orderBy: GroupsOrderBy.Alphabetical,
   });
 
   if (result.isErr()) {

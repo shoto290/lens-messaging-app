@@ -7,6 +7,12 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { CreateProfile } from "./create-profile";
+import {
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "../ui/drawer";
 
 interface ChooseProfileProps {
   login: (lensAccountAddress: string) => Promise<boolean>;
@@ -66,15 +72,13 @@ export function ChooseProfile({
     <div className="w-full flex flex-col gap-2">
       {accounts && accounts.length > 0 && (
         <>
-          <div className="flex flex-col gap-1 items-center text-center mb-6 mt-3">
-            <h2 className="text-xl font-medium font-mono pl-1">
-              Choose a Lens Profile
-            </h2>
-            <p className="text-xs text-muted-foreground">
+          <DrawerHeader>
+            <DrawerTitle>Choose a Lens Profile</DrawerTitle>
+            <DrawerDescription>
               Pick an existing profile or create a new one.
-            </p>
-          </div>
-          <div className="flex flex-col gap-2 max-h-60 overflow-y-auto mb-4">
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="flex flex-col gap-2 max-h-60 overflow-y-auto">
             {accounts.map(({ account }: AccountAvailable) => (
               <Button
                 key={account.address}
@@ -119,16 +123,18 @@ export function ChooseProfile({
               <p>Create a new profile</p>
             </Button>
           </div>
-          <Button
-            size="rounded"
-            variant="secondary"
-            className="w-full"
-            onClick={() => disconnect()}
-            disabled={isPending}
-          >
-            Change wallet
-            <Icons.Wallet />
-          </Button>
+          <DrawerFooter>
+            <Button
+              size="rounded"
+              variant="secondary"
+              className="w-full"
+              onClick={() => disconnect()}
+              disabled={isPending}
+            >
+              Change wallet
+              <Icons.Wallet />
+            </Button>
+          </DrawerFooter>
         </>
       )}
     </div>

@@ -16,5 +16,11 @@ export default function RootLayout({
     return <LoadingPage />;
   }
 
-  return hasAccount ? app : login;
+  return (
+    <div className="flex flex-col h-dvh">
+      <div className="relative flex-1 w-full max-w-lg mx-auto">
+        {hasAccount ? app : login}
+      </div>
+    </div>
+  );
 }
