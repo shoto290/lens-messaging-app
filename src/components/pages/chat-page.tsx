@@ -11,9 +11,10 @@ import { CommunityAvatar } from "../community/community-avatar";
 import { useChatMessages } from "@/hooks/chat/use-chat-messages";
 import { useSendMessages } from "@/hooks/chat/use-send-messages";
 import { Skeleton } from "../ui/skeleton";
-import { formatTime } from "@/lib/utils";
 import { useAccount } from "@/hooks/use-account";
-import { UserAvatar } from "../user/user-avatar";
+import { ChatBubble } from "../chat/chat-bubble";
+import { Account, AnyPost } from "@lens-protocol/client";
+import { toast } from "sonner";
 
 export function ChatPage() {
   const [messageText, setMessageText] = useState("");
@@ -25,7 +26,8 @@ export function ChatPage() {
   const { messages, isPending } = useChatMessages(
     activeCommunity?.feed?.address
   );
-  const { sendMessage } = useSendMessages(activeCommunity?.feed?.address);
+  const [pendingMessage, setPendingMessage] = useState<AnyPost | null>(null);
+  const { sendMessageAsync } = useSendMessages(activeCommunity?.feed?.address);
 
   useEffect(() => {
     if (messagesContainerRef.current && shouldScrollToBottom) {
@@ -42,18 +44,36 @@ export function ChatPage() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    setPendingMessage(null);
+  }, [messages]);
+
+  const handleSendMessage = async () => {
+    if (!messageText.trim()) return;
+
+    try {
+      setPendingMessage({
+        id: "pending",
+        author: account,
+        timestamp: new Date(),
+        metadata: {
+          content: messageText,
+        },
+      } as any);
+      setMessageText("");
+      setShouldScrollToBottom(true);
+
+      await sendMessageAsync(messageText);
+    } catch (error) {
+      toast.error("Failed to send message");
+      console.error(error);
+    }
+  };
+
   if (!activeCommunity) {
     setActiveSection(Section.MESSAGES);
     return null;
   }
-
-  const handleSendMessage = () => {
-    if (!messageText.trim()) return;
-    sendMessage(messageText);
-    setMessageText("");
-    // Enable auto-scrolling when sending a new message
-    setShouldScrollToBottom(true);
-  };
 
   return (
     <div className="container flex flex-col absolute inset-0 z-10 bg-background">
@@ -77,7 +97,7 @@ export function ChatPage() {
       </div>
 
       <div
-        className="flex-grow overflow-y-auto p-4 flex flex-col gap-4 pb-24"
+        className="flex-grow overflow-y-auto p-4 flex flex-col gap-1 pb-24"
         ref={messagesContainerRef}
       >
         {isPending
@@ -92,53 +112,21 @@ export function ChatPage() {
                   </div>
                 </div>
               ))
-          : messages.map((message) => {
-              const isMe =
-                message.author.username?.id === account?.username?.id;
-
-              return (
-                <div
-                  key={message.id}
-                  className={`flex gap-3 ${isMe ? "flex-row-reverse" : ""}`}
-                >
-                  <div
-                    className={`flex flex-col max-w-[80%] ${
-                      isMe ? "items-end" : ""
-                    }`}
-                  >
-                    <div
-                      className={`flex items-center gap-2 text-xs text-muted-foreground mb-1 ${
-                        isMe ? "flex-row-reverse" : ""
-                      }`}
-                    >
-                      {
-                        <UserAvatar
-                          className="size-5"
-                          name={message.author.metadata?.name}
-                          icon={message.author.metadata?.picture}
-                        />
-                      }
-                      <span className="font-semibold">
-                        {isMe ? "You" : message.author.metadata?.name}
-                      </span>
-                      <span>
-                        {formatTime(new Date(message.timestamp.toString()))}
-                      </span>
-                    </div>
-
-                    <div
-                      className={`px-4 py-3 rounded-lg overflow-hidden w-fit ${
-                        isMe
-                          ? "bg-primary text-primary-foreground "
-                          : "bg-muted "
-                      }`}
-                    >
-                      {(message as any).metadata?.content}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          : messages.map((message, index, array) => (
+              <ChatBubble
+                key={message.id}
+                account={account as Account}
+                message={message}
+                prevMessage={array[index - 1]}
+              />
+            ))}
+        {pendingMessage && (
+          <ChatBubble
+            account={account as Account}
+            message={pendingMessage}
+            isPending={true}
+          />
+        )}
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 p-4 flex gap-2 backdrop-blur-lg rounded-t-[30px] overflow-hidden bg-background/50">
@@ -150,7 +138,11 @@ export function ChatPage() {
           onChange={(e) => setMessageText(e.target.value)}
           onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
         />
-        <Button variant="default" onClick={handleSendMessage}>
+        <Button
+          disabled={!!pendingMessage}
+          variant="default"
+          onClick={handleSendMessage}
+        >
           <Icons.Send />
         </Button>
       </div>
