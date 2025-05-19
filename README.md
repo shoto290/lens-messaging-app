@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lens Messaging App
 
-## Getting Started
+![Lens Protocol](https://lens.xyz/favicon.png)
 
-First, run the development server:
+## 🏆 Lens Spring Hackathon 2025 Submission
+
+A next-generation decentralized messaging application built on Lens Protocol that combines social primitives with secure peer-to-peer communication, all powered by Lens Chain.
+
+### 🌟 About The Project
+
+Lens Messaging App is a modern, user-friendly platform that bridges the gap between social networking and private messaging using Lens Protocol's social primitives. Our project leverages the power of Lens Chain to provide users with a seamless, secure, and decentralized messaging experience.
+
+#### Key Features:
+
+- **Decentralized Authentication**: Connect with your wallet and Lens profile
+- **Real-time Messaging**: Send and receive messages instantly through Lens Protocol
+- **Profile Integration**: Showcase your Lens profile directly in the app
+- **Community Building**: Create and join communities around shared interests
+- **Profile Discovery**: Find and connect with other Lens users
+- **SocialFi Integration**: Built using Lens social primitives and SocialFi capabilities
+- **Modern UI/UX**: Beautiful, responsive interface with dark/light mode support
+- **Web3 Native**: Fully integrated with Lens Chain and ConnectKit/Family
+
+### 🛠️ Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS, Radix UI components
+- **Authentication**: ConnectKit, Continue with Family
+- **Blockchain**: Lens Chain, Lens Protocol
+- **State Management**: Zustand, TanStack Query
+- **Form Handling**: React Hook Form, Zod validation
+
+### 🚀 Getting Started
+
+#### Prerequisites
+
+- Node.js (v18+)
+- Yarn or npm
+- A wallet with Lens Chain support
+
+#### Installation
 
 ```bash
-npm run dev
-# or
+# Clone the repository
+git clone https://github.com/shoto290/lens-messaging-app.git
+cd lens-messaging-app
+
+# Install dependencies
+yarn install
+
+# Start the development server
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the app in action.
 
-You can start editing the page by modifying `src/app/(root)/@app/page.tsx`. The page auto-updates as you edit the file.
+### 📱 Application Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Authentication**: Seamless wallet connection and Lens profile authentication
+- **Messaging**: Private peer-to-peer messaging with Lens Chain integration
+- **Profile Management**: Update your Lens profile directly from the app
+- **Community Features**: Create and join topic-based communities
+- **Discover**: Find new connections based on interests and activities
 
-## Learn More
+### 🔗 Lens Protocol Integration
 
-To learn more about Next.js, take a look at the following resources:
+Our app deeply integrates with Lens Protocol by:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Using Lens Social Primitives**: Profiles, connections, and content sharing
+2. **Deploying Smart Contracts on Lens Chain**: All messaging and social interaction contracts run on Lens Chain
+3. **Implementing ConnectKit and Continue with Family**: For fast, free, and easy onboarding
+4. **Leveraging the Lens Developer Dashboard**: For app management and analytics
+5. **Using Lens Authentication**: For secure profile-based access
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 💡 Unique SocialFi Features
 
-## Deploy on Vercel
+- **Profile-Based Communications**: All messaging tied to verifiable Lens profiles
+- **Community-Powered Content Discovery**: Find relevant conversations and connections
+- **Decentralized Storage**: Message history stored on Lens Chain
+- **On-Chain Identity**: Full integration with Lens social graph
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 🧪 Future Enhancements
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Voice and video messaging capabilities
+- Images, reactions and threads in chat
+- Token-gated messaging groups
+
+### 🙏 Acknowledgments
+
+- [Lens Protocol](https://lens.xyz)
+- [Lens Labs](https://lens.xyz)
+- Next.js Team
+- All contributors and supporters
+
+---
+
+Built with 💚 for the Lens Spring Hackathon 2025
