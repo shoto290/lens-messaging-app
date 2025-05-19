@@ -7,7 +7,9 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerDescription,
   DrawerFooter,
+  DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
@@ -35,11 +37,20 @@ export function SettingsDrawer() {
         </Button>
       </DrawerTrigger>
       <DrawerContent>
-        <DrawerTitle hidden className="text-center">
-          Settings
-        </DrawerTitle>
+        <DrawerHeader>
+          <DrawerTitle className="text-center">Edit lens profile</DrawerTitle>
+          <DrawerDescription>
+            <p>
+              Personalize{" "}
+              <span className="text-blue-600">
+                @{account?.username?.localName}
+              </span>
+            </p>
+            <p>Add name, bio and an image to your account</p>
+          </DrawerDescription>
+        </DrawerHeader>
         <div className="flex flex-col h-full">
-          <div className="flex-grow overflow-y-auto px-3">
+          <div className="flex-grow overflow-y-auto">
             <div className="space-y-3 pt-1">
               <ProfileSettingsCard
                 avatarSrc={account?.metadata?.picture}
@@ -57,8 +68,8 @@ export function SettingsDrawer() {
                 className="w-full"
                 onClick={handleLogout}
               >
-                <Icons.Door className="size-4" />
                 Log out
+                <Icons.LogOut className="size-4" />
               </Button>
             </DrawerClose>
           </DrawerFooter>

@@ -4,7 +4,6 @@ import {
   CirclePlusIcon,
   CompassIcon,
   DoorOpenIcon,
-  Loader2Icon,
   ChevronLeftIcon,
   SendIcon,
   MessagesSquareIcon,
@@ -12,13 +11,17 @@ import {
   ArrowLeftIcon,
   PlusCircleIcon,
   EllipsisIcon,
+  LogOutIcon,
+  WalletIcon,
+  UserPlusIcon,
+  LoaderIcon,
 } from "lucide-react";
 
 interface IconProps {
   className?: string;
 }
 
-const Loader = ({ ...props }: IconProps) => <Loader2Icon {...props} />;
+const Loader = ({ ...props }: IconProps) => <LoaderIcon {...props} />;
 
 const Discover = ({ ...props }: IconProps) => <CompassIcon {...props} />;
 
@@ -44,6 +47,12 @@ const Plus = ({ ...props }: IconProps) => <PlusCircleIcon {...props} />;
 
 const Ellipsis = ({ ...props }: IconProps) => <EllipsisIcon {...props} />;
 
+const LogOut = ({ ...props }: IconProps) => <LogOutIcon {...props} />;
+
+const Wallet = ({ ...props }: IconProps) => <WalletIcon {...props} />;
+
+const UserPlus = ({ ...props }: IconProps) => <UserPlusIcon {...props} />;
+
 export const Icons = {
   Loader,
   Discover,
@@ -58,4 +67,7 @@ export const Icons = {
   ArrowLeft,
   Plus,
   Ellipsis,
+  LogOut,
+  Wallet,
+  UserPlus,
 };

@@ -66,14 +66,21 @@ export function ChooseProfile({
     <div className="w-full flex flex-col gap-2">
       {accounts && accounts.length > 0 && (
         <>
-          <h2 className="font-medium font-mono pl-1">Select a Lens account</h2>
-          <div className="flex flex-col gap-2 max-h-60 overflow-y-auto">
+          <div className="flex flex-col gap-1 items-center text-center mb-6 mt-3">
+            <h2 className="text-xl font-medium font-mono pl-1">
+              Choose a Lens Profile
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              Pick an existing profile or create a new one.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2 max-h-60 overflow-y-auto mb-4">
             {accounts.map(({ account }: AccountAvailable) => (
               <Button
                 key={account.address}
-                variant="outline"
+                variant="secondary"
                 className={cn(
-                  "relative w-full justify-start gap-2 py-3.5  px-4 h-fit"
+                  "relative w-full justify-start gap-2 py-3.5 px-5 h-fit"
                 )}
                 onClick={() => handleLogin(account.address)}
                 disabled={isPending}
@@ -86,11 +93,11 @@ export function ChooseProfile({
                       name={account.metadata?.name}
                     />
                   </div>
-                  <div className="flex-1 text-left space-y-1">
-                    <p className="font-bold font-mono">
+                  <div className="flex-1 text-left ">
+                    <p className="text-lg font-bold font-mono">
                       {account.metadata?.name || "Unnamed Profile"}
                     </p>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-xs text-muted-foreground truncate font-sans">
                       @{account.username?.localName}
                     </p>
                   </div>
@@ -103,17 +110,13 @@ export function ChooseProfile({
               </Button>
             ))}{" "}
             <Button
-              variant="outline"
-              className={cn(
-                "relative w-full justify-start gap-2 py-3.5  px-4 h-18"
-              )}
+              variant="link"
+              className="w-full justify-start gap-2"
               disabled={isPending}
               onClick={() => setWantToCreateAccount(true)}
             >
-              <div className="flex items-center gap-5 w-full">
-                <Icons.Plus />
-                <p className="font-bold font-mono">Create a new profile</p>
-              </div>
+              <Icons.UserPlus />
+              <p>Create a new profile</p>
             </Button>
           </div>
           <Button
@@ -124,6 +127,7 @@ export function ChooseProfile({
             disabled={isPending}
           >
             Change wallet
+            <Icons.Wallet />
           </Button>
         </>
       )}

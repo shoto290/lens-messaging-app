@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useLensAuthentication } from "@/hooks/lens/use-lens-authentication";
 import { Loader2 } from "lucide-react";
 import { useLensProfileUpdateMetadata } from "@/hooks/lens/use-lens-profile-update-metadata";
@@ -114,12 +114,13 @@ export const ProfileSettingsCard = forwardRef<
 
   return (
     <Card className="relative">
-      <CardHeader>
-        <CardTitle className="text-lg font-medium">Profile</CardTitle>
-      </CardHeader>
       <CardContent>
         <div className="flex justify-between items-center">
-          <UserAvatar className="size-16" icon={avatarSrc} name={name} />
+          <UserAvatar
+            className="size-16 ring ring-ring"
+            icon={avatarSrc}
+            name={name}
+          />
           <div className="mt-2 flex gap-2">
             <input
               type="file"

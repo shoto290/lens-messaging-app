@@ -41,13 +41,13 @@ export function ChatBubble({
       <div className={`flex flex-col max-w-[80%] ${isMe ? "items-end" : ""}`}>
         {(!isSameAuthor || isPending) && (
           <div
-            className={`flex items-center gap-2 text-xs text-muted-foreground mb-1 ${
+            className={`flex items-center gap-1.5 text-xs mb-2 ${
               isMe ? "flex-row-reverse" : ""
             }`}
           >
             {
               <UserAvatar
-                className="size-5"
+                className="size-6 ring-ring ring"
                 name={message.author.metadata?.name}
                 icon={message.author.metadata?.picture}
               />
@@ -56,9 +56,12 @@ export function ChatBubble({
               {isMe ? "You" : message.author.metadata?.name}
             </span>
             <p>•</p>
-            <div className="flex items-center gap-2 justify-center">
+            <div className="flex items-center gap-2 justify-center text-muted-foreground">
               {isPending ? (
-                <Icons.Loader className="size-3 animate-spin" />
+                <div className="flex items-center gap-1 text-blue-600">
+                  <p className="text-xs">sending</p>
+                  <Icons.Loader className="size-3 animate-spin" />
+                </div>
               ) : (
                 formatedTime
               )}
@@ -67,8 +70,8 @@ export function ChatBubble({
         )}
 
         <div
-          className={`px-4 py-3 rounded-lg overflow-hidden w-fit ${
-            isMe ? "bg-primary text-primary-foreground " : "bg-muted "
+          className={`px-4 py-3 rounded-xl overflow-hidden w-fit ${
+            isMe ? "bg-blue-600 text-primary" : "bg-primary"
           }`}
         >
           {(message as any).metadata?.content}

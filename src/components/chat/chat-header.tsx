@@ -15,24 +15,27 @@ export function ChatHeader({
   setActiveSection,
 }: ChatHeaderProps) {
   return (
-    <div className="border-border border-b p-[12px] pt-[16px] flex justify-between items-center">
-      <div className="flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setActiveSection(Section.MESSAGES)}
-        >
-          <Icons.ChevronLeft />
-        </Button>
-        <CommunityAvatar
-          name={activeCommunity.metadata?.name}
-          icon={activeCommunity.metadata?.icon}
-        />
-        <h3 className="text-sm font-bold font-mono">
-          {activeCommunity.metadata?.name}
-        </h3>
+    <div>
+      <div className="border-border border-b p-[12px] pt-[16px] flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setActiveSection(Section.MESSAGES)}
+          >
+            <Icons.ChevronLeft />
+          </Button>
+          <CommunityAvatar
+            className="rounded-md"
+            name={activeCommunity.metadata?.name}
+            icon={activeCommunity.metadata?.icon}
+          />
+          <h3 className="text-sm font-bold font-mono">
+            {activeCommunity.metadata?.name}
+          </h3>
+        </div>
+        <ChatSettingsDrawer community={activeCommunity} />
       </div>
-      <ChatSettingsDrawer community={activeCommunity} />
     </div>
   );
 }

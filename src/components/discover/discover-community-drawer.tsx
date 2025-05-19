@@ -6,6 +6,7 @@ import {
 } from "../ui/drawer";
 import { Community } from "@/services/community-service.types";
 import { DiscoverCommunityDrawerContent } from "./discover-community-drawer-content";
+import { CommunityResume } from "../community/community-resume";
 
 interface DiscoverCommunityDrawerProps {
   children: React.ReactNode;
@@ -24,7 +25,7 @@ export function DiscoverCommunityDrawer({
           Join community
         </DrawerTitle>
         <DiscoverCommunityDrawerContent community={community}>
-          {children}
+          <CommunityResume community={community} />
         </DiscoverCommunityDrawerContent>
       </DrawerContent>
     </Drawer>

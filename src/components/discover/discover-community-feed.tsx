@@ -20,7 +20,9 @@ export function DiscoverCommunityFeed() {
             ))}
         </CarouselContent>
       </Carousel>
-      <p className="text-sm font-medium font-mono px-4 pl-6 pt-6">Lastest</p>
+      <p className="text-sm font-medium font-mono px-4 pl-6 pt-6">
+        Lastest created
+      </p>
       <div className="flex flex-col gap-2 px-4">
         {discoverCommunities?.map((community) => (
           <DiscoverCommunityItem

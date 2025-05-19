@@ -5,12 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Drawer,
   DrawerContent,
+  DrawerFooter,
   DrawerTitle,
   DrawerTrigger,
 } from "../ui/drawer";
 import { Community } from "@/services/community-service.types";
 import { useCommunityMembers } from "@/hooks/community/use-community-members";
 import { UserAvatar } from "../user/user-avatar";
+import { CommunityResume } from "../community/community-resume";
 
 interface ChatSettingsDrawerProps {
   community: Community;
@@ -29,14 +31,15 @@ export function ChatSettingsDrawer({ community }: ChatSettingsDrawerProps) {
           <Icons.Ellipsis />
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="px-2 pb-2 space-y-2">
+      <DrawerContent className="space-y-2">
+        <CommunityResume community={community} hideMembers />
         <DrawerTitle hidden>Settings</DrawerTitle>
         {members?.items.length && members?.items.length > 0 && (
-          <Card>
+          <Card className="rounded-lg border border-border">
             <CardHeader>
               <CardTitle>Members ({members?.items.length})</CardTitle>
             </CardHeader>
-            <CardContent className="max-h-[300px] overflow-y-auto">
+            <CardContent className=" max-h-[300px] overflow-y-auto">
               <div className="flex flex-col gap-3">
                 {members?.items?.map((member) => (
                   <div key={member.account.address}>
@@ -60,21 +63,23 @@ export function ChatSettingsDrawer({ community }: ChatSettingsDrawerProps) {
             </CardContent>
           </Card>
         )}
-        <Button
-          variant="destructive"
-          className="w-full"
-          onClick={() => leaveCommunity()}
-          disabled={isPending}
-        >
-          {isPending ? (
-            <>
-              <Icons.Loader className="size-4 animate-spin" />
-              <span>Leaving...</span>
-            </>
-          ) : (
-            "Leave Community"
-          )}
-        </Button>
+        <DrawerFooter>
+          <Button
+            variant="secondary"
+            className="w-full"
+            onClick={() => leaveCommunity()}
+            disabled={isPending}
+          >
+            {isPending ? (
+              <>
+                <Icons.Loader className="size-4 animate-spin" />
+                <span>Leaving...</span>
+              </>
+            ) : (
+              "Leave Community"
+            )}
+          </Button>
+        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );

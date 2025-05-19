@@ -10,7 +10,7 @@ export function Navbar({
   return (
     <nav
       className={cn(
-        "flex items-center justify-between border-t border-border w-full px-[24px] py-[24px] pb-[30px]",
+        "flex items-center justify-around border-t border-border w-full px-[24px] py-[24px] pb-[30px]",
         className
       )}
     >

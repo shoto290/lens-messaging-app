@@ -114,16 +114,17 @@ export function ChatPage() {
         )}
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 p-4 flex gap-2 backdrop-blur-lg rounded-t-[30px] overflow-hidden bg-background/50">
+      <div className="absolute bottom-0 left-0 right-0 p-4 flex gap-2  rounded-t-[30px] overflow-hidden ">
         <input
           type="text"
-          className="flex-grow px-4 py-2 rounded-md bg-accent border border-border"
+          className="flex-grow px-4 py-2 bg-primary border border-border shadow-lg/5 rounded-full h-12"
           placeholder="Type a message..."
           value={messageText}
           onChange={(e) => setMessageText(e.target.value)}
           onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
         />
         <Button
+          className="rounded-full h-12 aspect-square border border-border shadow-lg/5"
           disabled={!!pendingMessage}
           variant="default"
           onClick={handleSendMessage}

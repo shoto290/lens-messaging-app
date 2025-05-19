@@ -106,11 +106,7 @@ export function DiscoverCommunityDrawerContent({
 
   return (
     <DrawerContent>
-      <div className="px-3">
-        <div className="border border-border rounded-xl overflow-hidden">
-          {children}
-        </div>
-      </div>
+      <div className="px-3 mb-3">{children}</div>
       <DrawerFooter>
         <Button
           variant="secondary"
