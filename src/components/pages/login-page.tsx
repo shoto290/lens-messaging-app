@@ -1,4 +1,5 @@
 import { ConnectNavbar } from "@/components/navbar/connect-navbar";
+import { Marquee } from "../magicui/marquee";
 
 export function LoginPage() {
   return (
@@ -20,16 +21,21 @@ export function LoginPage() {
         </p>
       </div>
 
-      <div className="bg-primary rounded-3xl w-full flex flex-col justify-center items-center text-center py-6 space-y-4 ">
+      <div className="bg-primary rounded-3xl w-full flex flex-col justify-center items-center text-center py-6 space-y-4 overflow-hidden">
         <p className="text-xs max-w-[260px] text-muted-foreground">
           Join <span className="text-primary-foreground">10,928+</span>{" "}
           Communities Built with Lens Protocol
         </p>
-        <img
-          src="/images/community.png"
-          alt="Login page image"
-          className="w-full h-full object-cover pl-3"
-        />
+        <Marquee pauseOnHover className="[--duration:40s]">
+          {new Array(5).fill(0).map((_, index) => (
+            <img
+              key={index}
+              src={`/images/community-${index}.png`}
+              alt={`Login page image ${index}`}
+              className="w-[64px] rounded-[24px] border border-border"
+            />
+          ))}
+        </Marquee>
       </div>
       <ConnectNavbar />
     </div>
