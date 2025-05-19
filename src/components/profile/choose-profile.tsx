@@ -3,7 +3,7 @@ import { Icons } from "../icons";
 import { useLensAccounts } from "@/hooks/lens/use-lens-accounts";
 import { AccountAvailable } from "@lens-protocol/client";
 import { UserAvatar } from "../user/user-avatar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { CreateProfile } from "./create-profile";
@@ -35,6 +35,12 @@ export function ChooseProfile({
     }
   };
 
+  useEffect(() => {
+    if (accounts && accounts.length === 0) {
+      setWantToCreateAccount(true);
+    }
+  }, [accounts]);
+
   if (isLoading) {
     return (
       <div className="w-full flex flex-col items-center gap-4 py-4">
@@ -47,12 +53,18 @@ export function ChooseProfile({
   }
 
   if (wantToCreateAccount) {
-    return <CreateProfile setWantToCreateAccount={setWantToCreateAccount} />;
+    return (
+      <CreateProfile
+        setWantToCreateAccount={setWantToCreateAccount}
+        newUser={accounts?.length === 0}
+        disconnect={disconnect}
+      />
+    );
   }
 
   return (
     <div className="w-full flex flex-col gap-2">
-      {accounts && accounts.length > 0 ? (
+      {accounts && accounts.length > 0 && (
         <>
           <h2 className="font-medium font-mono pl-1">Select a Lens account</h2>
           <div className="flex flex-col gap-2 max-h-60 overflow-y-auto">
@@ -104,37 +116,6 @@ export function ChooseProfile({
               </div>
             </Button>
           </div>
-          <Button
-            size="rounded"
-            variant="secondary"
-            className="w-full"
-            onClick={() => disconnect()}
-            disabled={isPending}
-          >
-            Change wallet
-          </Button>
-        </>
-      ) : (
-        <>
-          <div className="text-center mb-4">
-            <p className="font-medium">No Lens accounts found</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Create a new account to continue
-            </p>
-          </div>
-          <Button className="w-full" disabled={isPending}>
-            {isPending ? (
-              <>
-                Creating Lens account
-                <Icons.Loader className="size-4 ml-2 animate-spin" />
-              </>
-            ) : (
-              <>
-                Create Lens account
-                <Icons.Create className="size-4 ml-2" />
-              </>
-            )}
-          </Button>
           <Button
             size="rounded"
             variant="secondary"

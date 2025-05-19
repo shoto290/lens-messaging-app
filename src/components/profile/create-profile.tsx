@@ -31,10 +31,16 @@ const communityCreateFormSchema = z.object({
 type CommunityCreateFormValues = z.infer<typeof communityCreateFormSchema>;
 
 interface CreateProfileProps {
+  newUser: boolean;
   setWantToCreateAccount: (wantToCreateAccount: boolean) => void;
+  disconnect: () => void;
 }
 
-export function CreateProfile({ setWantToCreateAccount }: CreateProfileProps) {
+export function CreateProfile({
+  newUser,
+  setWantToCreateAccount,
+  disconnect,
+}: CreateProfileProps) {
   const { createAccount, isPending } = useCreateAccount();
   const { accountInfo, updateAccountInfo } = useAccountCreateStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -214,7 +220,13 @@ export function CreateProfile({ setWantToCreateAccount }: CreateProfileProps) {
       </Card>
       <div className="w-full flex gap-2 items-center">
         <Button
-          onClick={() => setWantToCreateAccount(false)}
+          onClick={() => {
+            if (newUser) {
+              disconnect();
+            } else {
+              setWantToCreateAccount(false);
+            }
+          }}
           className="rounded-full"
           size="icon"
           variant="outline"
