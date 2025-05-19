@@ -19,11 +19,14 @@ export function CommunityAvatar({
   }, [icon]);
 
   return (
-    <Avatar className={cn("rounded-[16px] size-10 bg-primary", className)}>
+    <Avatar
+      className={cn(
+        "rounded-[16px] size-10 bg-primary border border-border",
+        className
+      )}
+    >
       <AvatarImage src={imageUrl} />
-      <AvatarFallback className="bg-primary">
-        {name?.slice(0, 2).toUpperCase() || "N"}
-      </AvatarFallback>
+      <AvatarFallback>{name?.slice(0, 2).toUpperCase() || "N"}</AvatarFallback>
     </Avatar>
   );
 }

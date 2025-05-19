@@ -2,7 +2,7 @@ import { ConnectNavbar } from "@/components/navbar/connect-navbar";
 
 export function LoginPage() {
   return (
-    <div className="flex flex-col items-center h-dvh bg-white justify-between px-4">
+    <div className="flex flex-col items-center h-dvh bg-white justify-end px-4 gap-20">
       <div />
       <div className="flex flex-col gap-3 items-center justify-center text-center">
         <p className="font-medium font-mono text-xl max-w-[300px]">
@@ -19,9 +19,7 @@ export function LoginPage() {
           to all.
         </p>
       </div>
-      <div className="bg-secondary rounded-3xl p-3">
-        <img src="/images/landing-requirement.png" alt="Login page image" />
-      </div>
+
       <div className="bg-secondary rounded-3xl w-full flex flex-col justify-center items-center text-center py-6 space-y-4 ">
         <p className="text-xs max-w-[260px] text-muted-foreground">
           Join <span className="text-primary-foreground">10,928+</span>{" "}
