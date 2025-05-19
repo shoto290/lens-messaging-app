@@ -92,7 +92,7 @@ export const CommunityCreateGlobalCard =
       <Card className="relative">
         <CardHeader>
           <CardTitle className="text-lg font-medium">
-            Community Global
+            Community informations
           </CardTitle>
         </CardHeader>
         <CardContent>

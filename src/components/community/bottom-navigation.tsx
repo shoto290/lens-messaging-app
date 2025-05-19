@@ -13,7 +13,7 @@ export function BottomNavigation({
   return (
     <div
       className={cn(
-        "fixed bottom-[87px] left-0 right-0 z-40 flex justify-end-safe gap-2 border-t border-border bg-background p-4",
+        "fixed bottom-[71px] left-0 right-0 z-40 flex justify-end-safe gap-2 border-t border-border bg-background p-4",
         className
       )}
     >

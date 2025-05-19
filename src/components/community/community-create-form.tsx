@@ -63,9 +63,7 @@ export function CommunityCreateForm() {
     <div className="w-full h-full flex flex-col justify-between flex-1">
       <CommunityCreateStepper />
 
-      <div className="p-3 flex-grow overflow-auto">
-        <div className="bg-card rounded-3xl p-3">{renderStep()}</div>
-      </div>
+      <div className="p-3 flex-grow overflow-auto">{renderStep()}</div>
 
       <BottomActionBar
         onBack={currentStep > 1 ? prevStep : undefined}

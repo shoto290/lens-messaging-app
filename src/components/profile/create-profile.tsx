@@ -12,7 +12,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCommunityAvatarUpload } from "@/hooks/community/use-community-avatar-upload";
 import { Loader2 } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { z } from "zod";

@@ -35,7 +35,7 @@ export function ChatSettingsDrawer({ community }: ChatSettingsDrawerProps) {
         <CommunityResume community={community} hideMembers />
         <DrawerTitle hidden>Settings</DrawerTitle>
         {members?.items.length && members?.items.length > 0 && (
-          <Card className="rounded-lg border border-border">
+          <Card className="rounded-lg border border-border bg-transparent">
             <CardHeader>
               <CardTitle>Members ({members?.items.length})</CardTitle>
             </CardHeader>

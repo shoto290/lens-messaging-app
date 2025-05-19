@@ -16,7 +16,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
 import { useLensAuthentication } from "@/hooks/lens/use-lens-authentication";
 import { Loader2 } from "lucide-react";
 import { useLensProfileUpdateMetadata } from "@/hooks/lens/use-lens-profile-update-metadata";
@@ -113,95 +112,90 @@ export const ProfileSettingsCard = forwardRef<
   }
 
   return (
-    <Card className="relative">
-      <CardContent>
-        <div className="flex justify-between items-center">
-          <UserAvatar
-            className="size-16 ring ring-ring"
-            icon={avatarSrc}
-            name={name}
+    <div className="p-2">
+      <div className="flex justify-between items-center">
+        <UserAvatar
+          className="size-16 ring ring-ring"
+          icon={avatarSrc}
+          name={name}
+        />
+        <div className="mt-2 flex gap-2">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*"
+            className="hidden"
           />
-          <div className="mt-2 flex gap-2">
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              accept="image/*"
-              className="hidden"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="rounded"
-              onClick={handleEditPhoto}
-              disabled={!isAuthenticated || isUploading || isPending}
-            >
-              {isUploading ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              ) : null}
-              Edit photo
-            </Button>
-          </div>
-        </div>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="mt-4 space-y-4"
+          <Button
+            type="button"
+            variant="outline"
+            size="rounded"
+            onClick={handleEditPhoto}
+            disabled={!isAuthenticated || isUploading || isPending}
           >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <div className="relative">
-                    <FormControl>
-                      <Input
-                        placeholder="Your name"
-                        {...field}
-                        onBlur={() => handleBlur()}
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                    {isPending && (
-                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                      </div>
-                    )}
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <div className="relative">
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        onBlur={() => handleBlur()}
-                        disabled={isPending}
-                        className="resize-none max-h-20"
-                      />
-                    </FormControl>
-                    {isPending && (
-                      <div className="absolute right-3 top-3">
-                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                      </div>
-                    )}
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+            {isUploading ? (
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            ) : null}
+            Edit photo
+          </Button>
+        </div>
+      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <div className="relative">
+                  <FormControl>
+                    <Input
+                      placeholder="Your name"
+                      {...field}
+                      onBlur={() => handleBlur()}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  {isPending && (
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                    </div>
+                  )}
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <div className="relative">
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      onBlur={() => handleBlur()}
+                      disabled={isPending}
+                      className="resize-none max-h-20"
+                    />
+                  </FormControl>
+                  {isPending && (
+                    <div className="absolute right-3 top-3">
+                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                    </div>
+                  )}
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
+    </div>
   );
 });
 
