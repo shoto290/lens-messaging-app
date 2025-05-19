@@ -47,8 +47,6 @@ export function useJoinCommunity({ community }: UseJoinCommunityProps) {
         toast.success(
           "Join request submitted successfully! Waiting for approval."
         );
-      } else {
-        toast.success("Successfully joined the community!");
       }
 
       if (!data.requiresApproval) {

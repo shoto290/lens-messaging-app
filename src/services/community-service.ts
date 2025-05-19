@@ -5,6 +5,7 @@ import {
   joinGroup,
   requestGroupMembership,
   createGroup,
+  leaveGroup,
 } from "@lens-protocol/client/actions";
 import { lensClient } from "./lens-service";
 import { evmAddress, Group, SessionClient, uri } from "@lens-protocol/client";
@@ -242,6 +243,23 @@ const createCommunity = async (
   return result.value;
 };
 
+const leaveCommunity = async (
+  sessionClient: SessionClient,
+  walletClient: ViemWalletClient,
+  communityAddress: string
+) => {
+  const result = await leaveGroup(sessionClient, {
+    group: evmAddress(communityAddress),
+  })
+    .andThen(handleOperationWith(walletClient))
+    .andThen(sessionClient.waitForTransaction);
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  return result.value;
+};
 export const communityService = {
   getUserCommunities,
   getMembersOfCommunity,
@@ -250,4 +268,5 @@ export const communityService = {
   joinCommunity,
   isMemberOfCommunity,
   createCommunity,
+  leaveCommunity,
 };

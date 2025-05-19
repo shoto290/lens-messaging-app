@@ -7,7 +7,6 @@ import { Button } from "../ui/button";
 import { Icons } from "../icons";
 import { useNavigation } from "@/stores/navigation-store";
 import { Section } from "@/lib/types/navigation";
-import { CommunityAvatar } from "../community/community-avatar";
 import { useChatMessages } from "@/hooks/chat/use-chat-messages";
 import { useSendMessages } from "@/hooks/chat/use-send-messages";
 import { Skeleton } from "../ui/skeleton";
@@ -15,6 +14,7 @@ import { useAccount } from "@/hooks/use-account";
 import { ChatBubble } from "../chat/chat-bubble";
 import { Account, AnyPost } from "@lens-protocol/client";
 import { toast } from "sonner";
+import { ChatHeader } from "../chat/chat-header";
 
 export function ChatPage() {
   const [messageText, setMessageText] = useState("");
@@ -77,25 +77,10 @@ export function ChatPage() {
 
   return (
     <div className="container flex flex-col absolute inset-0 z-10 bg-background">
-      <div className="border-border border-b p-[12px] pt-[16px] flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setActiveSection(Section.MESSAGES)}
-          >
-            <Icons.ChevronLeft />
-          </Button>
-          <CommunityAvatar
-            name={activeCommunity.metadata?.name}
-            icon={activeCommunity.metadata?.icon}
-          />
-          <h3 className="text-sm font-bold font-mono">
-            {activeCommunity.metadata?.name}
-          </h3>
-        </div>
-      </div>
-
+      <ChatHeader
+        activeCommunity={activeCommunity}
+        setActiveSection={setActiveSection}
+      />
       <div
         className="flex-grow overflow-y-auto p-4 flex flex-col gap-1 pb-24"
         ref={messagesContainerRef}

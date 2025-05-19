@@ -11,6 +11,7 @@ import {
   UsersIcon,
   ArrowLeftIcon,
   PlusCircleIcon,
+  EllipsisIcon,
 } from "lucide-react";
 
 interface IconProps {
@@ -41,6 +42,8 @@ const ArrowLeft = ({ ...props }: IconProps) => <ArrowLeftIcon {...props} />;
 
 const Plus = ({ ...props }: IconProps) => <PlusCircleIcon {...props} />;
 
+const Ellipsis = ({ ...props }: IconProps) => <EllipsisIcon {...props} />;
+
 export const Icons = {
   Loader,
   Discover,
@@ -54,4 +57,5 @@ export const Icons = {
   Users,
   ArrowLeft,
   Plus,
+  Ellipsis,
 };
