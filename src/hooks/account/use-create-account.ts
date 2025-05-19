@@ -2,6 +2,7 @@ import { queryClient } from "@/app/provider";
 import { useAccountCreateStore } from "@/stores/account-create-store";
 import { useAccountStore } from "@/stores/account-store";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { useAccount, useWalletClient } from "wagmi";
 
 export function useCreateAccount() {
@@ -30,6 +31,9 @@ export function useCreateAccount() {
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["account"] });
       queryClient.invalidateQueries({ queryKey: ["lens-accounts"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 
