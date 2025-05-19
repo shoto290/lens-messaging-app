@@ -6,6 +6,7 @@ import { DiscoverPage } from "./discover-page";
 import { MessagesPage } from "./messages-page";
 import { CreatePage } from "./create-page";
 import { ChatPage } from "./chat-page";
+import { SearchPage } from "./search-page";
 
 export function ContentManager() {
   const { activeSection } = useNavigation();
@@ -16,6 +17,7 @@ export function ContentManager() {
       {activeSection === Section.MESSAGES && <MessagesPage />}
       {activeSection === Section.CREATE && <CreatePage />}
       {activeSection === Section.CHAT && <ChatPage />}
+      {activeSection === Section.SEARCH && <SearchPage />}
     </div>
   );
 }

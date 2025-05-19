@@ -15,6 +15,12 @@ export const NAVBAR_ITEMS: NavItem[] = [
     section: Section.DISCOVER,
   },
   {
+    id: "search",
+    icon: Icons.Search,
+    label: "Search",
+    section: Section.SEARCH,
+  },
+  {
     id: "create",
     icon: Icons.Create,
     label: "Create",

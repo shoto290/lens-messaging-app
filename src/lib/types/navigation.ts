@@ -5,6 +5,7 @@ export enum Section {
   MESSAGES = "Messages",
   CREATE = "Create",
   CHAT = "Chat",
+  SEARCH = "Search",
 }
 
 export interface NavItem {

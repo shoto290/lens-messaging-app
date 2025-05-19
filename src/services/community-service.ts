@@ -58,6 +58,21 @@ const getTrendingCommunities = async (): Promise<Community[]> => {
   return communities;
 };
 
+const getSearchCommunities = async (query?: string): Promise<Community[]> => {
+  const result = await fetchGroups(lensClient, {
+    filter: {
+      searchQuery: query || "",
+    },
+  });
+
+  if (result.isErr()) {
+    throw result.error;
+  }
+
+  const communities: Community[] = [...result.value.items];
+  return communities;
+};
+
 const getMembersOfCommunity = async (communityId: string) => {
   const result = await fetchGroupMembers(lensClient, {
     group: evmAddress(communityId),
@@ -276,4 +291,5 @@ export const communityService = {
   isMemberOfCommunity,
   createCommunity,
   leaveCommunity,
+  getSearchCommunities,
 };

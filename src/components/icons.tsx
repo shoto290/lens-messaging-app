@@ -15,6 +15,7 @@ import {
   WalletIcon,
   UserPlusIcon,
   LoaderIcon,
+  SearchIcon,
 } from "lucide-react";
 
 interface IconProps {
@@ -53,6 +54,8 @@ const Wallet = ({ ...props }: IconProps) => <WalletIcon {...props} />;
 
 const UserPlus = ({ ...props }: IconProps) => <UserPlusIcon {...props} />;
 
+const Search = ({ ...props }: IconProps) => <SearchIcon {...props} />;
+
 export const Icons = {
   Loader,
   Discover,
@@ -70,4 +73,5 @@ export const Icons = {
   LogOut,
   Wallet,
   UserPlus,
+  Search,
 };

@@ -5,7 +5,6 @@ import { Navbar } from "./navbar";
 import { NAVBAR_ITEMS } from "@/lib/constants/navigation";
 import { useNavigation } from "@/stores/navigation-store";
 import { cn } from "@/lib/utils";
-import { SettingsDrawer } from "../settings/settings-drawer";
 
 export function AppNavbar() {
   const { activeSection, setActiveSection } = useNavigation();
@@ -41,7 +40,6 @@ export function AppNavbar() {
             </Button>
           );
         })}
-        <SettingsDrawer />
       </Navbar>
     </>
   );
