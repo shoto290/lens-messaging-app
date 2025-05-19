@@ -36,13 +36,13 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider
       attribute="class"
-      defaultTheme="light"
+      defaultTheme="system"
       enableSystem
       disableTransitionOnChange
     >
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <ConnectKitProvider mode="light">{children}</ConnectKitProvider>
+          <ConnectKitProvider mode="auto">{children}</ConnectKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
     </ThemeProvider>

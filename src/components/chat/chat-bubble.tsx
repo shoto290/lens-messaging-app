@@ -71,7 +71,7 @@ export function ChatBubble({
 
         <div
           className={`px-4 py-3 rounded-xl overflow-hidden w-fit ${
-            isMe ? "bg-blue-600 text-primary" : "bg-primary"
+            isMe ? "bg-blue-600 text-white" : "bg-primary"
           }`}
         >
           {(message as any).metadata?.content}
