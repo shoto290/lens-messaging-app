@@ -30,7 +30,7 @@ export function LoginPage() {
           {new Array(5).fill(0).map((_, index) => (
             <img
               key={index}
-              src={`/images/community-${index}.png`}
+              src={`/images/community-${index}.avif`}
               alt={`Login page image ${index}`}
               className="w-[64px] rounded-[24px] border border-border"
             />
