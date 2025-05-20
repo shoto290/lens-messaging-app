@@ -1,12 +1,22 @@
 import { useMutation } from "@tanstack/react-query";
 import { acrossService } from "@/services/across-service";
 import { useAccount } from "../use-account";
-import { useSendTransaction, useWalletClient } from "wagmi";
+import {
+  useClient,
+  useSendTransaction,
+  useTransactionReceipt,
+  useWalletClient,
+} from "wagmi";
 import { useAccount as useWagmiAccount } from "wagmi";
 import { sleep } from "@/lib/utils";
-import { Address, encodeFunctionData, erc20Abi, maxInt256, pad } from "viem";
+import { Address, encodeFunctionData, erc20Abi, pad } from "viem";
 
 import SPOKE_POOL_ABI from "@/abis/SPOKE_POOL_ABI.json";
+import {
+  getTransactionConfirmations,
+  getTransactionReceipt,
+  waitForTransactionReceipt,
+} from "viem/actions";
 
 function addressToBytes32(address: Address): `0x${string}` {
   return pad(address as `0x${string}`, { size: 32 });
@@ -17,6 +27,7 @@ export function useBridge() {
   const { account } = useAccount();
   const { data: walletClient } = useWalletClient();
   const { sendTransactionAsync } = useSendTransaction();
+  const client = useClient();
 
   const mutation = useMutation({
     mutationFn: async ({ amount }: { amount: string }) => {
@@ -30,6 +41,10 @@ export function useBridge() {
 
       if (!address) {
         throw new Error("No address found");
+      }
+
+      if (!client) {
+        throw new Error("No client found");
       }
 
       const { deposit } = await acrossService.getQuote(amount, address);
@@ -70,7 +85,7 @@ export function useBridge() {
       const approveEncodedData = encodeFunctionData({
         abi: erc20Abi,
         functionName: "approve",
-        args: [deposit.spokePoolAddress, BigInt(maxInt256)],
+        args: [deposit.spokePoolAddress, BigInt(deposit.inputAmount)],
       });
 
       const approveTx = await sendTransactionAsync({
@@ -79,8 +94,8 @@ export function useBridge() {
         value: BigInt(0),
       });
 
-      console.log({
-        approveTx,
+      await waitForTransactionReceipt(client, {
+        hash: approveTx,
       });
 
       const encodedData = encodeFunctionData({
@@ -108,9 +123,13 @@ export function useBridge() {
         value: BigInt(0),
       });
 
+      const receipt = await waitForTransactionReceipt(client, {
+        hash: tx,
+      });
+
       await sleep(10000);
 
-      return tx;
+      return receipt;
     },
   });
 
