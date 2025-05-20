@@ -36,7 +36,6 @@ export function useCreateCommunity() {
         },
         oneTimeAccess
       );
-      return true;
     },
     onSuccess: (createdCommunity) => {
       queryClient.invalidateQueries({ queryKey: ["user-communities"] });
