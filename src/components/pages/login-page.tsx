@@ -4,7 +4,7 @@ import { Marquee } from "../magicui/marquee";
 export function LoginPage() {
   return (
     <div className="flex flex-col items-center h-dvh  justify-end px-4 gap-20">
-      <div />
+      <img className="size-20 rounded-3xl" src="/images/logo.png" />
       <div className="flex flex-col gap-3 items-center justify-center text-center">
         <p className="font-medium font-mono text-xl max-w-[300px]">
           Build & join communities, fully on Lens
