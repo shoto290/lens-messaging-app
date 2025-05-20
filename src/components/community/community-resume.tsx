@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Community } from "@/services/community-service.types";
 import { CommunityAvatar } from "./community-avatar";
 import { CommunityMembers } from "./community-members";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 interface CommunityResumeProps {
   community: Community;
@@ -11,6 +13,8 @@ export function CommunityResume({
   community,
   hideMembers = false,
 }: CommunityResumeProps) {
+  console.log({ community });
+
   return (
     <div className="flex flex-col justify-center items-center gap-4">
       <CommunityAvatar
@@ -27,6 +31,44 @@ export function CommunityResume({
         </p>
       </div>
       {!hideMembers && <CommunityMembers community={community} />}
+      {!hideMembers &&
+        community?.rules?.required?.map((rule) => {
+          if (rule.type === "SIMPLE_PAYMENT") {
+            return (
+              <Card className="w-full" key={rule.id}>
+                <CardHeader>
+                  <CardTitle>One-time payment</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="border border-border w-full flex justify-between items-center p-2 h-14 rounded-xl bg-primary">
+                    <div className="flex items-center gap-2">
+                      <img
+                        src="/images/usdc.svg"
+                        alt="USDC"
+                        className="size-10 rounded-sm"
+                      />
+                      <div className="flex flex-col items-start">
+                        <p className="text-sm font-medium">
+                          {(rule.config[1] as any).string}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {(rule.config[2] as any).string}
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">
+                        {(rule.config[3] as any).bigDecimal}{" "}
+                        {(rule.config[2] as any).string}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          }
+          return null;
+        })}
     </div>
   );
 }
