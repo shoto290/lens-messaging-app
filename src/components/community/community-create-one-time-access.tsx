@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useCommunityOneTimeAccess } from "@/hooks/community/use-community-one-time-access";
 import { Switch } from "../ui/switch";
 import { cn } from "@/lib/utils";
+import { lens } from "viem/chains";
 
 const tokens: Token[] = [
   // {
@@ -26,6 +27,7 @@ const tokens: Token[] = [
     symbol: "USDC",
     image: "/images/usdc.svg",
     address: "0x88F08E304EC4f90D644Cec3Fb69b8aD414acf884",
+    chain: lens,
   },
 ];
 

@@ -8,6 +8,7 @@ import { queryClient } from "@/app/provider";
 import { communityService } from "@/services/community-service";
 import { Community } from "@/services/community-service.types";
 import { useChatStore } from "@/stores/chat-store";
+import { Token } from "@/components/token/choose-token-drawer";
 
 interface UseJoinCommunityProps {
   community: Community;
@@ -22,7 +23,7 @@ export function useJoinCommunity({ community }: UseJoinCommunityProps) {
   const joinMutation = useMutation<
     Awaited<ReturnType<typeof communityService.joinCommunity>>,
     Error,
-    void
+    { token: Token; amount?: string }
   >({
     mutationFn: async () => {
       if (!sessionClient) {

@@ -1,18 +1,17 @@
-import { chains } from "@lens-chain/sdk/viem";
-import { base } from "viem/chains";
+import { base, lens } from "viem/chains";
 import { createAcrossClient, Quote } from "@across-protocol/app-sdk";
 import { parseUnits } from "viem/utils";
 import { Address } from "viem";
 
 const client = createAcrossClient({
   integratorId: "0xdead",
-  chains: [chains.mainnet, base],
+  chains: [lens, base],
 });
 
 const getAvailableRoutes = async () => {
   const options = {
     originChainId: base.id,
-    destinationChainId: chains.mainnet.id,
+    destinationChainId: lens.id,
   };
   const routes = await client.getAvailableRoutes(options);
 
@@ -20,15 +19,18 @@ const getAvailableRoutes = async () => {
 };
 
 const getQuote = async (amount: string, recipient: Address) => {
+  // add 5% more (fees + slippage)
+  const amountWithFees = (Number(amount) * 1.05).toString();
+
   const quote = await client.getQuote({
     route: {
       originChainId: base.id,
-      destinationChainId: chains.mainnet.id,
+      destinationChainId: lens.id,
       inputToken: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       outputToken: "0x88F08E304EC4f90D644Cec3Fb69b8aD414acf884",
     },
     recipient,
-    inputAmount: parseUnits(amount, 6),
+    inputAmount: parseUnits(amountWithFees, 6),
   });
 
   return quote;

@@ -7,6 +7,7 @@ import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import { ReactNode } from "react";
 import { ThemeProvider } from "next-themes";
 import { env } from "@/env";
+import { base } from "viem/chains";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,9 +20,10 @@ export const queryClient = new QueryClient({
 
 const config = createConfig(
   getDefaultConfig({
-    chains: [chains.mainnet],
+    chains: [chains.mainnet, base],
     transports: {
       [chains.mainnet.id]: http(chains.mainnet.rpcUrls.default.http[0]!),
+      [base.id]: http(base.rpcUrls.default.http[0]!),
     },
     walletConnectProjectId: env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
     appName: "Lens Messaging App",

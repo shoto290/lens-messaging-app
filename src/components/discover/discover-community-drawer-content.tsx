@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useJoinCommunity } from "@/hooks/community/use-join-community";
@@ -10,15 +11,22 @@ import { useIsCommunityMember } from "@/hooks/community/use-is-member";
 import { useChatStore } from "@/stores/chat-store";
 import { useNavigation } from "@/stores/navigation-store";
 import { Section } from "@/lib/types/navigation";
+import { Token } from "../token/choose-token-drawer";
+import { useSwitchChain } from "wagmi";
+import { lens } from "viem/chains";
+import { useBridge } from "@/hooks/bridge/use-bridge";
+import { sleep } from "@/lib/utils";
 
 interface DiscoverCommunityDrawerContentProps {
   community: Community;
   children: React.ReactNode;
+  selectedToken: Token;
 }
 
 export function DiscoverCommunityDrawerContent({
   children,
   community,
+  selectedToken,
 }: DiscoverCommunityDrawerContentProps) {
   const { joinCommunity, isPending } = useJoinCommunity({ community });
   const { data: canJoinData, isLoading: isCheckingJoinStatus } =
@@ -27,9 +35,30 @@ export function DiscoverCommunityDrawerContent({
     useIsCommunityMember(community.address);
   const { setActiveCommunity } = useChatStore();
   const { setActiveSection } = useNavigation();
+  const { switchChainAsync } = useSwitchChain();
+  const { bridgeAsync, isPending: isBridgePending } = useBridge();
 
-  const handleJoinCommunity = () => {
-    joinCommunity();
+  const handleJoinCommunity = async (token: Token) => {
+    if (token.chain.id !== lens.id) {
+      await switchChainAsync({
+        chainId: token.chain.id,
+      });
+
+      await bridgeAsync({
+        amount: (community?.rules?.required[0]?.config[3] as any)?.bigDecimal,
+      });
+    }
+
+    await switchChainAsync({
+      chainId: lens.id,
+    });
+
+    await sleep(1000);
+
+    joinCommunity({
+      token,
+      amount: (community?.rules?.required[0]?.config[3] as any)?.bigDecimal,
+    });
   };
 
   const handleGoToChat = () => {
@@ -38,6 +67,14 @@ export function DiscoverCommunityDrawerContent({
   };
 
   const getButtonContent = () => {
+    if (isBridgePending) {
+      return (
+        <>
+          Bridging...
+          <Icons.Loader className="size-4 ml-2 animate-spin" />
+        </>
+      );
+    }
     if (isPending) {
       return (
         <>
@@ -77,11 +114,22 @@ export function DiscoverCommunityDrawerContent({
       return "You can't join this community";
     }
 
+    if (
+      community.rules.required.some((rule) => rule.type === "SIMPLE_PAYMENT")
+    ) {
+      return `Pay with ${selectedToken.symbol} on ${selectedToken.chain.name}`;
+    }
+
     return "Join the community";
   };
 
   const isButtonDisabled = () => {
-    if (isPending || isCheckingJoinStatus || isCheckingMembership) {
+    if (
+      isPending ||
+      isCheckingJoinStatus ||
+      isCheckingMembership ||
+      isBridgePending
+    ) {
       return true;
     }
 
@@ -100,7 +148,7 @@ export function DiscoverCommunityDrawerContent({
     if (isMember) {
       handleGoToChat();
     } else {
-      handleJoinCommunity();
+      handleJoinCommunity(selectedToken);
     }
   };
 
