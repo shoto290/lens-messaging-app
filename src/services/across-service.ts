@@ -2,7 +2,7 @@ import { chains } from "@lens-chain/sdk/viem";
 import { base } from "viem/chains";
 import { createAcrossClient, Quote } from "@across-protocol/app-sdk";
 import { parseUnits } from "viem/utils";
-import { Address, WalletClient } from "viem";
+import { Address } from "viem";
 
 const client = createAcrossClient({
   integratorId: "0xdead",

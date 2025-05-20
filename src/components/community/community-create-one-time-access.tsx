@@ -5,50 +5,64 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-  CardDescription,
+  CardAction,
 } from "../ui/card";
 import { ChooseTokenDrawer, Token } from "../token/choose-token-drawer";
 import { Input } from "../ui/input";
 import { useEffect, useState } from "react";
 import { useCommunityOneTimeAccess } from "@/hooks/community/use-community-one-time-access";
+import { Switch } from "../ui/switch";
+import { cn } from "@/lib/utils";
 
 const tokens: Token[] = [
-  {
-    name: "GHO",
-    symbol: "WGHO",
-    image: "/images/gho.png",
-    address: "0x6bDc36E20D267Ff0dd6097799f82e78907105e2F",
-  },
   // {
-  //   name: "USDC",
-  //   symbol: "USDC",
-  //   image: "/images/usdc.svg",
+  //   name: "GHO",
+  //   symbol: "WGHO",
+  //   image: "/images/gho.png",
+  //   address: "0x6bDc36E20D267Ff0dd6097799f82e78907105e2F",
   // },
+  {
+    name: "USDC",
+    symbol: "USDC",
+    image: "/images/usdc.svg",
+    address: "0x88F08E304EC4f90D644Cec3Fb69b8aD414acf884",
+  },
 ];
 
 export function CommunityCreateOneTimeAccess() {
   const [amount, setAmount] = useState(0);
   const [token, setToken] = useState<Token>(tokens[0]);
+  const [enabled, setEnabled] = useState(false);
 
-  const { updateOneTimeAccess } = useCommunityOneTimeAccess();
+  const { updateOneTimeAccess, cancelOneTimeAccess } =
+    useCommunityOneTimeAccess();
 
   useEffect(() => {
-    updateOneTimeAccess({
-      token,
-      amount,
-    });
-  }, [token, amount]);
+    if (enabled) {
+      updateOneTimeAccess({
+        token,
+        amount,
+      });
+    } else {
+      cancelOneTimeAccess();
+      setAmount(0);
+      setToken(tokens[0]);
+    }
+  }, [token, amount, enabled]);
 
   return (
-    <Card className="relative">
+    <Card className={cn("relative", !enabled && "opacity-50")}>
       <CardHeader>
         <CardTitle className="text-lg font-medium">
           One-time access price
         </CardTitle>
-        <CardDescription>
-          Members pay this single fee to unlock the community forever. Funds go
-          straight to your wallet
-        </CardDescription>
+        <CardAction>
+          <Switch
+            checked={enabled}
+            onCheckedChange={setEnabled}
+            className="data-[state=checked]:bg-primary"
+          />
+        </CardAction>
       </CardHeader>
       <CardContent className="w-full space-y-2">
         <ChooseTokenDrawer
