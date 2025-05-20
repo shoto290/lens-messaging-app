@@ -9,6 +9,8 @@ import {
 } from "@lens-protocol/client/actions";
 import { lensClient } from "./lens-service";
 import {
+  bigDecimal,
+  CreateGroupRequest,
   evmAddress,
   Group,
   GroupsOrderBy,
@@ -20,6 +22,7 @@ import { handleOperationWith } from "@lens-protocol/client/viem";
 import { type WalletClient as ViemWalletClient } from "viem";
 import { group, GroupOptions } from "@lens-protocol/metadata";
 import { groveService } from "./grove-service";
+import { Token } from "@/components/token/choose-token-drawer";
 
 export type JoinValidationStatus =
   | "allowed"
@@ -241,7 +244,11 @@ const joinCommunity = async (
 const createCommunity = async (
   sessionClient: SessionClient,
   walletClient: ViemWalletClient,
-  options: GroupOptions
+  options: GroupOptions,
+  oneTimeAccess?: {
+    token: Token;
+    amount: number;
+  }
 ): Promise<Group | null> => {
   const metadata = group({
     name: options.name,
@@ -249,11 +256,31 @@ const createCommunity = async (
     icon: options.icon || undefined,
   });
 
+  if (!walletClient.account) {
+    throw new Error("Wallet account not found");
+  }
+
   const metadataUri = await groveService.uploadJson(metadata);
 
-  const result = await createGroup(sessionClient, {
+  const request: CreateGroupRequest = {
     metadataUri: uri(metadataUri),
-  })
+  };
+  if (oneTimeAccess) {
+    request.rules = {
+      required: {
+        simplePaymentRule: {
+          cost: {
+            currency: evmAddress(oneTimeAccess.token.address),
+            value: bigDecimal(oneTimeAccess.amount.toString()),
+          },
+          recipient: evmAddress(walletClient.account.address),
+        },
+      },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+  }
+
+  const result = await createGroup(sessionClient, request)
     .andThen(handleOperationWith(walletClient))
     .andThen(sessionClient.waitForTransaction)
     .andThen((txHash) => fetchGroup(sessionClient, { txHash }));

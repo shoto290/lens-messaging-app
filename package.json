@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@across-protocol/app-sdk": "^0.2.2",
     "@hookform/resolvers": "^5.0.1",
+    "@lens-chain/sdk": "^1.0.3",
     "@lens-chain/storage-client": "^1.0.4",
     "@lens-protocol/client": "^0.0.0-canary-20250509094551",
     "@lens-protocol/metadata": "^2.0.0",
@@ -34,7 +36,7 @@
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.3.0",
     "vaul": "^1.1.2",
-    "viem": "2.x",
+    "viem": "^2.30.0",
     "wagmi": "^2.15.3",
     "zod": "^3.24.4",
     "zustand": "^5.0.4"

@@ -16,6 +16,7 @@ import {
   UserPlusIcon,
   LoaderIcon,
   SearchIcon,
+  ChevronRightIcon,
 } from "lucide-react";
 
 interface IconProps {
@@ -56,6 +57,10 @@ const UserPlus = ({ ...props }: IconProps) => <UserPlusIcon {...props} />;
 
 const Search = ({ ...props }: IconProps) => <SearchIcon {...props} />;
 
+const ChevronRight = ({ ...props }: IconProps) => (
+  <ChevronRightIcon {...props} />
+);
+
 export const Icons = {
   Loader,
   Discover,
@@ -74,4 +79,5 @@ export const Icons = {
   Wallet,
   UserPlus,
   Search,
+  ChevronRight,
 };

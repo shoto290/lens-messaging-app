@@ -1,3 +1,4 @@
+import { Token } from "@/components/token/choose-token-drawer";
 import { create } from "zustand";
 
 export enum CommunityCreateStep {
@@ -6,10 +7,14 @@ export enum CommunityCreateStep {
   STEP_3 = 3,
 }
 
-interface CommunityCreateInfo {
+export interface CommunityCreateInfo {
   name: string;
   description: string;
   avatar?: string;
+  oneTimeAccess?: {
+    token: Token;
+    amount: number;
+  };
 }
 
 interface CommunityCreateState {
@@ -27,6 +32,8 @@ interface CommunityCreateActions {
   reset: () => void;
   setSubmitting: (isSubmitting: boolean) => void;
   validateForm: () => boolean;
+  updateOneTimeAccess: (token: Token, amount: number) => void;
+  cancelOneTimeAccess: () => void;
 }
 
 // Store complet
@@ -41,6 +48,7 @@ const DEFAULT_STATE: CommunityCreateState = {
     name: "",
     description: "",
     avatar: undefined,
+    oneTimeAccess: undefined,
   },
   isValid: false,
   isSubmitting: false,
@@ -102,6 +110,21 @@ export const useCommunityCreateStore = create<CommunityCreateStore>(
       }
 
       return false;
+    },
+
+    updateOneTimeAccess: (token: Token, amount: number) => {
+      const { communityInfo } = get();
+      const newInfo = { ...communityInfo, oneTimeAccess: { token, amount } };
+      set({ communityInfo: newInfo });
+    },
+
+    cancelOneTimeAccess: () => {
+      set({
+        communityInfo: {
+          ...get().communityInfo,
+          oneTimeAccess: undefined,
+        },
+      });
     },
   })
 );

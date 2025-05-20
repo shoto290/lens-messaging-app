@@ -9,6 +9,7 @@ import { BottomActionBar } from "./bottom-action-bar";
 import { useCreateCommunity } from "@/hooks/community/use-create-community";
 import { toast } from "sonner";
 import { CommunityCreateGlobalCard } from "./community-create-global-card";
+import { CommunityCreateOneTimeAccess } from "./community-create-one-time-access";
 
 export function CommunityCreateForm() {
   const {
@@ -29,7 +30,12 @@ export function CommunityCreateForm() {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <CommunityCreateGlobalCard />;
+        return (
+          <div className="flex flex-col gap-3">
+            <CommunityCreateGlobalCard />
+            <CommunityCreateOneTimeAccess />
+          </div>
+        );
       case 2:
         return <CommunityCreateResumeStep />;
       default:
@@ -40,11 +46,7 @@ export function CommunityCreateForm() {
   const handleAction = async () => {
     if (currentStep === CommunityCreateStep.STEP_2) {
       try {
-        await createCommunityAsync({
-          name: communityInfo.name,
-          description: communityInfo.description,
-          icon: communityInfo.avatar,
-        });
+        await createCommunityAsync(communityInfo);
 
         reset();
       } catch (err) {

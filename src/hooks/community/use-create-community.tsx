@@ -8,12 +8,7 @@ import { useChatStore } from "@/stores/chat-store";
 import { useAccountStore } from "@/stores/account-store";
 import { useWalletClient } from "wagmi";
 import { communityService } from "@/services/community-service";
-
-interface CreateCommunityInput {
-  name: string;
-  description?: string;
-  icon?: string;
-}
+import { CommunityCreateInfo } from "@/stores/community-create-store";
 
 export function useCreateCommunity() {
   const { setActiveSection } = useNavigation();
@@ -21,8 +16,8 @@ export function useCreateCommunity() {
   const { sessionClient } = useAccountStore();
   const { data: walletClient } = useWalletClient();
 
-  const createMutation = useMutation<unknown, Error, CreateCommunityInput>({
-    mutationFn: async ({ name, description, icon }) => {
+  const createMutation = useMutation<unknown, Error, CommunityCreateInfo>({
+    mutationFn: async ({ name, description, avatar, oneTimeAccess }) => {
       if (!sessionClient) {
         throw new Error("You must be authenticated to join a community");
       }
@@ -31,11 +26,17 @@ export function useCreateCommunity() {
         throw new Error("Wallet client not available");
       }
 
-      return communityService.createCommunity(sessionClient, walletClient, {
-        name,
-        description,
-        icon,
-      });
+      return communityService.createCommunity(
+        sessionClient,
+        walletClient,
+        {
+          name,
+          description,
+          icon: avatar,
+        },
+        oneTimeAccess
+      );
+      return true;
     },
     onSuccess: (createdCommunity) => {
       queryClient.invalidateQueries({ queryKey: ["user-communities"] });
