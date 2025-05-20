@@ -1,22 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import { acrossService } from "@/services/across-service";
 import { useAccount } from "../use-account";
-import {
-  useClient,
-  useSendTransaction,
-  useTransactionReceipt,
-  useWalletClient,
-} from "wagmi";
+import { useClient, useSendTransaction, useWalletClient } from "wagmi";
 import { useAccount as useWagmiAccount } from "wagmi";
 import { sleep } from "@/lib/utils";
 import { Address, encodeFunctionData, erc20Abi, pad } from "viem";
 
 import SPOKE_POOL_ABI from "@/abis/SPOKE_POOL_ABI.json";
-import {
-  getTransactionConfirmations,
-  getTransactionReceipt,
-  waitForTransactionReceipt,
-} from "viem/actions";
+import { waitForTransactionReceipt } from "viem/actions";
 
 function addressToBytes32(address: Address): `0x${string}` {
   return pad(address as `0x${string}`, { size: 32 });
@@ -48,39 +39,6 @@ export function useBridge() {
       }
 
       const { deposit } = await acrossService.getQuote(amount, address);
-
-      // {
-      //   "inputs": [
-      //     { "internalType": "bytes32", "name": "depositor", "type": "bytes32" },
-      //     { "internalType": "bytes32", "name": "recipient", "type": "bytes32" },
-      //     { "internalType": "bytes32", "name": "inputToken", "type": "bytes32" },
-      //     { "internalType": "bytes32", "name": "outputToken", "type": "bytes32" },
-      //     { "internalType": "uint256", "name": "inputAmount", "type": "uint256" },
-      //     { "internalType": "uint256", "name": "outputAmount", "type": "uint256" },
-      //     {
-      //       "internalType": "uint256",
-      //       "name": "destinationChainId",
-      //       "type": "uint256"
-      //     },
-      //     {
-      //       "internalType": "bytes32",
-      //       "name": "exclusiveRelayer",
-      //       "type": "bytes32"
-      //     },
-      //     { "internalType": "uint32", "name": "quoteTimestamp", "type": "uint32" },
-      //     { "internalType": "uint32", "name": "fillDeadline", "type": "uint32" },
-      //     {
-      //       "internalType": "uint32",
-      //       "name": "exclusivityParameter",
-      //       "type": "uint32"
-      //     },
-      //     { "internalType": "bytes", "name": "message", "type": "bytes" }
-      //   ],
-      //   "name": "deposit",
-      //   "outputs": [],
-      //   "stateMutability": "payable",
-      //   "type": "function"
-      // },
 
       const approveEncodedData = encodeFunctionData({
         abi: erc20Abi,
