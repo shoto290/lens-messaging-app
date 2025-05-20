@@ -4,7 +4,7 @@ import { useAccount } from "../use-account";
 import { useSendTransaction, useWalletClient } from "wagmi";
 import { useAccount as useWagmiAccount } from "wagmi";
 import { sleep } from "@/lib/utils";
-import { Address, encodeFunctionData, erc20Abi, pad } from "viem";
+import { Address, encodeFunctionData, erc20Abi, maxInt256, pad } from "viem";
 
 import SPOKE_POOL_ABI from "@/abis/SPOKE_POOL_ABI.json";
 
@@ -70,7 +70,7 @@ export function useBridge() {
       const approveEncodedData = encodeFunctionData({
         abi: erc20Abi,
         functionName: "approve",
-        args: [deposit.spokePoolAddress, BigInt(deposit.inputAmount)],
+        args: [deposit.spokePoolAddress, BigInt(maxInt256)],
       });
 
       const approveTx = await sendTransactionAsync({
