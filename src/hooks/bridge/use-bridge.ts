@@ -38,7 +38,7 @@ export function useBridge() {
         throw new Error("No client found");
       }
 
-      const { deposit } = await acrossService.getQuote(amount, address);
+      const { deposit } = await acrossService.getQuote(amount, account.address);
 
       const approveEncodedData = encodeFunctionData({
         abi: erc20Abi,
