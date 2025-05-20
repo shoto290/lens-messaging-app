@@ -32,7 +32,7 @@ export function CommunityCreateStepper() {
           {currentStepData?.name}
         </h3>
         <p className="text-xs text-muted-foreground">
-          {currentStepData?.description}y
+          {currentStepData?.description}
         </p>
       </div>
       <Badge variant="outline" className="text-xs font-mono">
